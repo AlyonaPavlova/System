@@ -17,10 +17,5 @@ const { Command } = require("./classes");
 
 
 console.log(Director.countWebProject());
-console.log(Director.countWebProject());
-console.log(Director.countWebProject());
-console.log(Director.countWebProject());
-console.log(Director.countWebProject());
-console.log(Director.countWebProject());
-console.log(Director.countWebProject());
+
 

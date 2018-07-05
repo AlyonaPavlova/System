@@ -13,47 +13,6 @@ class Director {
 
     constructor(name) {
         this.name = name;
-        this.projectsInDay = this.projectsInDay();
-    }
-
-    static projectsInDay() {
-        return Math.floor(Math.random() * 4);
-    }
-
-    static typeProject() {
-        let typesProjects = ["WebProject", "MobProject"];
-        let getProjects = [];
-        let projectsInDay = this.projectsInDay();
-
-        while(getProjects.length < projectsInDay) {
-            getProjects.push(typesProjects[Math.floor(Math.random() * typesProjects.length)]);
-        }
-        return getProjects;
-    }
-
-    static countWebProject() {
-
-        let typeProject = this.typeProject();
-        let webProjectsArray = typeProject.filter(function (item) {
-            return item === "WebProject";
-        });
-
-        return webProjectsArray.length;
-
-    }
-
-    static countMobProject() {
-
-        let typeProject = this.typeProject();
-        let mobProjectsArray = typeProject.filter(function (item) {
-            return item === "MobProject";
-        });
-
-        return mobProjectsArray.length;
-    }
-
-    getProjects() {
-        return this.typeProject(this.projectsInDay());
     }
 
     addDeveloper() {
@@ -69,58 +28,20 @@ class Director {
 
 }
 
-class Department {
-
-    constructor(name) {
-        this.name = name;
-    }
-
-}
-
-class WebDepartment extends Department {
-
-    constructor(name) {
-        super(name);
-        this.projectsInDay = Project.countWebProject();
-    }
-
-}
-
-class MobDepartment extends Department {
-
-    constructor(name) {
-        super(name);
-        this.projectsInDay = Project.countMobProject();
-    }
-
-}
-
-class QADepartment extends Department {
-
-    constructor(name) {
-        super(name);
-        this.projectsInDay = Project.countMobProject();
-    }
-
-    projectsInDay() {
-
-    }
-
-}
-
 class Project {
 
     constructor(name) {
         this.name = name;
         this.state = 1;
         this.complexity = this.complexity();
+        this.projectsInDay = this.getProjects();
     }
 
-    openState() {
+    static openState() {
         this.stateStatus = 1;
     }
 
-    closeState() {
+    static closeState() {
         this.stateStatus = 0;
     }
 
@@ -139,7 +60,7 @@ class Project {
         console.log(this.stateString());
     }
 
-    complexity() {
+    static complexity() {
         return Math.floor(Math.random() * 2) + 1;
     }
 
@@ -156,6 +77,43 @@ class Project {
         }
     }
 
+    static projectsInDay() {
+        return Math.floor(Math.random() * 4);
+    }
+
+    static typeProject(n) {
+        let typesProjects = ["WebProject", "MobProject"];
+        let getProjects = [];
+
+        while(getProjects.length < n) {
+            getProjects.push(typesProjects[Math.floor(Math.random() * typesProjects.length)]);
+        }
+        return getProjects;
+    }
+
+    static getProjects() {
+        return this.typeProject(this.projectsInDay());
+    }
+
+    static countWebProject() {
+
+        let webProjectsArray = this.getProjects().filter(function (item) {
+            return item === "WebProject";
+        });
+
+        return webProjectsArray.length;
+
+    }
+
+    static countMobProject() {
+
+        let mobProjectsArray = this.getProjects().filter(function (item) {
+            return item === "MobProject";
+        });
+
+        return mobProjectsArray.length;
+    }
+
 }
 
 class WebProject extends Project {
@@ -168,11 +126,92 @@ class MobProject extends Project {
 
 }
 
+class Department {
+
+    constructor(name) {
+        this.name = name;
+    }
+
+}
+
+class WebDepartment extends Department {
+
+    constructor(name) {
+        super(name);
+        this.freeMobDevelopers = freeMobDevelopers;
+        this.workingMobDevelopers = workingMobDevelopers;
+        this.projectsInDay = Project.countWebProject();
+    }
+
+    static workingMobDepartment() {
+
+        if (Project.complexity() === 1) {
+
+            this.freeMobDevelopers -= 1;
+            this.workingMobDevelopers += 1;
+
+            Project.closeState(); // Нужно учесть время. Проект закрывается через 1 день
+        }
+
+    }
+
+}
+
+class MobDepartment extends Department {
+
+    constructor(name) {
+        super(name);
+        this.mobDevelopers = mobDevelopers;
+        this.freeMobDevelopers = freeMobDevelopers;
+        this.workingMobDevelopers = workingMobDevelopers;
+        this.projectsInDay = Project.countMobProject();
+    }
+
+    static workingMobDepartment() {
+
+        if (Project.complexity() === 1) {
+
+            this.freeMobDevelopers -= 1;
+            this.workingMobDevelopers += 1;
+
+            Project.closeState(); // Нужно учесть время. Проект закрывается через 1 день
+        }
+
+        else if (Project.complexity() === 2) {
+
+            this.freeMobDevelopers -= 2;
+            this.workingMobDevelopers += 3;
+
+            Project.closeState(); // Нужно учесть время. Проект закрывается через 2 дня
+        }
+
+        else if (Project.complexity() === 3) {
+
+            this.freeMobDevelopers -= 3;
+            this.workingMobDevelopers += 3;
+
+            Project.closeState(); // Нужно учесть время. Проект закрывается через 3 дня
+        }
+
+    }
+
+}
+
+class QADepartment extends Department {
+
+    constructor(name) {
+        super(name);
+        this.projectsInDay = Project.countWebProject() + Project.countMobProject(); // Нужно избежать повторного вызова функций Web и Mob
+    }
+
+}
+
 class Developer {
 
     constructor(name) {
         this.name = name;
         this.status = 1;
+        this.numberProjects = this.numberProjects();
     }
 
     static efficiency() {
@@ -183,20 +222,57 @@ class Developer {
         this.status = 0;
     }
 
+    numberProjects() {
+        
+    }
+
 }
 
 class WebDeveloper extends Developer {
 
+    static working() {
+
+        if (Project.complexity() === 1) {
+            Project.closeState(); // Нужно учесть время. Проект закрывается через 1 день
+        }
+        else if (Project.complexity() === 2) {
+            Project.closeState(); // Нужно учесть время. Проект закрывается через 2 дня
+        }
+        else if (Project.complexity() === 3) {
+            Project.closeState(); // Нужно учесть время. Проект закрывается через 3 дня
+        }
+
+    }
 
 }
 
 class MobDeveloper extends Developer {
 
+    static working() {
+
+        if (Project.complexity() === 1) {
+            Project.closeState(); // Нужно учесть время. Проект закрывается через 1 день
+        }
+
+    }
 
 }
 
 class QASpecialist extends Developer {
 
+    static working() {
+
+        if (Project.complexity() === 1) {
+            Project.closeState(); // Нужно учесть время. Проект закрывается тестировщиком всегда через 1 день
+        }
+        else if (Project.complexity() === 2) {
+            Project.closeState(); // Нужно учесть время. Проект закрывается тестировщиком всегда через 1 день
+        }
+        else if (Project.complexity() === 3) {
+            Project.closeState(); // Нужно учесть время. Проект закрывается тестировщиком всегда через 1 день
+        }
+
+    }
 
 }
 
