@@ -18,6 +18,7 @@
   "homepage": "https://github.com/AlyonaPavlova/System#readme",
   "devDependencies": {
     "eslint": "^5.0.1",
+    "nodemon": "^1.17.5",
     "standard": "^11.0.1"
   }
 }

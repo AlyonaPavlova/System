@@ -17,16 +17,18 @@ class Company {
 
         let mobProjectsInDay = projectsInDay.filter(function (item) {return item.name === "MobProject";}).length;
 
-        if (webProjectsInDay !== 0) {
+        return webProjectsInDay;
 
-            if (WebDepartment.freeWebDevelopers !== 0) {
-
-                //  Присваиваем конкретному разработчику конкретный проект (по  id)
-                //  Или разработчикам проекты (каждому по 1 проекту)
-
-            }
-
-        }
+        // if (webProjectsInDay !== 0) {
+        //
+        //     if (WebDepartment.freeWebDevelopers !== 0) {
+        //
+        //         //  Присваиваем конкретному разработчику конкретный проект (по  id)
+        //         //  Или разработчикам проекты (каждому по 1 проекту)
+        //
+        //     }
+        //
+        // }
 
     }
 
@@ -38,26 +40,27 @@ class Director {
         this.name = name;
     }
 
-    static projectsInDay() {
+    static getRandNumber() {
         return Math.floor(Math.random() * 4);
     }
 
-    static typeProject(n) {
+
+    static createNewProjects(n) {
 
         WebProject.count = 0;
         MobProject.count = 0;
 
         let typesProjects = [new WebProject(WebProject.count, "WebProject"), new MobProject(MobProject.count, "MobProject")];
-        let getProjects = [];
+        let projects = [];
 
-        while(getProjects.length < n) {
-            getProjects.push(typesProjects[Math.floor(Math.random() * typesProjects.length)]);
+        while(projects.length < n) {
+            projects.push(typesProjects[Math.floor(Math.random() * typesProjects.length)]);
         }
-        return getProjects;
+        return projects;
     }
 
     static getProjects() {
-        return this.typeProject(this.projectsInDay());
+        return this.createNewProjects(this.getRandNumber());
     }
 
 }
@@ -69,6 +72,7 @@ class Project {
         this.name = name;
         this.state = 1;
         this.complexity = this.complexity();
+        // this.count = 0;
 
         Project.count ++;
     }
@@ -94,6 +98,7 @@ class WebProject extends Project {
 
 
 class MobProject extends Project {
+
 
 }
 
