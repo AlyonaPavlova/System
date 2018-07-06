@@ -2,9 +2,32 @@
 
 class Company {
 
-    constructor(name, projects) {
+    constructor(name, departments, director) {
         this.name = name;
-        this.projects = projects;
+        this.departments = departments;
+        this.director = director;
+    }
+
+    static working() {
+
+
+        let projectsInDay = Director.getProjects();
+
+        let webProjectsInDay = projectsInDay.filter(function (item) {return item.name === "WebProject";}).length;
+
+        let mobProjectsInDay = projectsInDay.filter(function (item) {return item.name === "MobProject";}).length;
+
+        if (webProjectsInDay !== 0) {
+
+            if (WebDepartment.freeWebDevelopers !== 0) {
+
+                //  Присваиваем конкретному разработчику конкретный проект (по  id)
+                //  Или разработчикам проекты (каждому по 1 проекту)
+
+            }
+
+        }
+
     }
 
 }
@@ -20,7 +43,11 @@ class Director {
     }
 
     static typeProject(n) {
-        let typesProjects = ["WebProject", "MobProject"];
+
+        WebProject.count = 0;
+        MobProject.count = 0;
+
+        let typesProjects = [new WebProject(WebProject.count, "WebProject"), new MobProject(MobProject.count, "MobProject")];
         let getProjects = [];
 
         while(getProjects.length < n) {
@@ -33,35 +60,17 @@ class Director {
         return this.typeProject(this.projectsInDay());
     }
 
-    static countWebProject() {
-
-        let webProjectsArray = this.getProjects().filter(function (item) {
-            return item === "WebProject";
-        });
-
-        return webProjectsArray.length;
-
-    }
-
-    static countMobProject() {
-
-        let mobProjectsArray = this.getProjects().filter(function (item) {
-            return item === "MobProject";
-        });
-
-        return mobProjectsArray.length;
-    }
-
 }
 
 class Project {
 
-    constructor(name) {
-        this.id = id; // Будет counter
+    constructor(id, name) {
+        this.id = id;
         this.name = name;
         this.state = 1;
         this.complexity = this.complexity();
-        this.projectsInDay = this.getProjects();
+
+        Project.count ++;
     }
 
     static openState() {
@@ -72,81 +81,28 @@ class Project {
         this.stateStatus = 0;
     }
 
-    stateString() {
-
-        switch (this.state) {
-            case this.state === 1:
-                return "Subject is open";
-
-            case this.state === 0:
-                return "Subject is close";
-        }
+    complexity() {
+        return Math.floor(Math.random() * 3) + 1;
     }
 
-    showState() {
-        console.log(this.stateString());
-    }
+}
 
-    static complexity() {
-        return Math.floor(Math.random() * 2) + 1;
-    }
+class WebProject extends Project {
 
-    get complexityString() {
 
-        if (this.complexity() === 1) {
-            console.log("Complexity easy");
-        }
-        else if (this.complexity() === 2) {
-            console.log("Complexity medium");
-        }
-        else {
-            console.log("Complexity high");
-        }
-    }
+}
 
-    // static projectsInDay() {
-    //     return Math.floor(Math.random() * 4);
-    // }
-    //
-    // static typeProject(n) {
-    //     let typesProjects = ["WebProject", "MobProject"];
-    //     let getProjects = [];
-    //
-    //     while(getProjects.length < n) {
-    //         getProjects.push(typesProjects[Math.floor(Math.random() * typesProjects.length)]);
-    //     }
-    //     return getProjects;
-    // }
-    //
-    // static getProjects() {
-    //     return this.typeProject(this.projectsInDay());
-    // }
 
-    // static countWebProject() {
-    //
-    //     let webProjectsArray = this.getProjects().filter(function (item) {
-    //         return item === "WebProject";
-    //     });
-    //
-    //     return webProjectsArray.length;
-    //
-    // }
-    //
-    // static countMobProject() {
-    //
-    //     let mobProjectsArray = this.getProjects().filter(function (item) {
-    //         return item === "MobProject";
-    //     });
-    //
-    //     return mobProjectsArray.length;
-    // }
+class MobProject extends Project {
 
 }
 
 class Department {
 
-    constructor(name) {
+    constructor(name, projects, developers) {
         this.name = name;
+        this.projects = projects;
+        this.developers = developers;
     }
 
     addDeveloper() {
@@ -164,11 +120,11 @@ class Department {
 
 class WebDepartment extends Department {
 
-    constructor(name) {
-        super(name);
-        this.freeWebDevelopers = freeWebDevelopers;
-        this.workingMobDevelopers = workingWebDevelopers;
-        this.projectsInDay = Project.countWebProject();
+    constructor(name, projects, developers) {
+        super(name, projects, developers);
+        // this.freeWebDevelopers = freeWebDevelopers;
+        // this.workingMobDevelopers = workingWebDevelopers;
+        // this.projectsInDay = Project.countWebProject();
     }
 
     static workingWebDepartment() {
@@ -189,10 +145,10 @@ class MobDepartment extends Department {
 
     constructor(name) {
         super(name);
-        this.mobDevelopers = mobDevelopers;
-        this.freeMobDevelopers = freeMobDevelopers;
-        this.workingMobDevelopers = workingMobDevelopers;
-        this.projectsInDay = Project.countMobProject();
+        // this.mobDevelopers = mobDevelopers;
+        // this.freeMobDevelopers = freeMobDevelopers;
+        // this.workingMobDevelopers = workingMobDevelopers;
+        // this.projectsInDay = Project.countMobProject();
     }
 
     static workingMobDepartment() {
@@ -229,18 +185,19 @@ class QADepartment extends Department {
 
     constructor(name) {
         super(name);
-        this.projectsInDay = Project.countWebProject() + Project.countMobProject(); // Нужно избежать повторного вызова функций Web и Mob
+        // this.projectsInDay = Project.countWebProject() + Project.countMobProject();  Нужно избежать повторного вызова функций Web и Mob
     }
 
 }
 
 class Developer {
 
-    constructor(name) {
-        this.id = id; // Будет counter
-        this.name = name;
+    constructor(id) {
+        this.id = id;
         this.status = 1;
         this.numberProjects = this.numberProjects();
+
+        Developer.count ++;
     }
 
     static efficiency() {
@@ -313,8 +270,10 @@ module.exports = {
     MobDepartment,
     QADepartment,
     Project,
+    WebProject,
+    MobProject,
     Developer,
     WebDeveloper,
     MobDeveloper,
-    QASpecialist,
+    QASpecialist
 };
