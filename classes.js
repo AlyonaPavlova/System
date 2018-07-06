@@ -15,15 +15,41 @@ class Director {
         this.name = name;
     }
 
-    addDeveloper() {
+    static projectsInDay() {
+        return Math.floor(Math.random() * 4);
+    }
+
+    static typeProject(n) {
+        let typesProjects = ["WebProject", "MobProject"];
+        let getProjects = [];
+
+        while(getProjects.length < n) {
+            getProjects.push(typesProjects[Math.floor(Math.random() * typesProjects.length)]);
+        }
+        return getProjects;
+    }
+
+    static getProjects() {
+        return this.typeProject(this.projectsInDay());
+    }
+
+    static countWebProject() {
+
+        let webProjectsArray = this.getProjects().filter(function (item) {
+            return item === "WebProject";
+        });
+
+        return webProjectsArray.length;
 
     }
 
-    static dismissDeveloper() {
+    static countMobProject() {
 
-        if (Developer.efficiency() === 0) {
-            Developer.changeStatus();
-        }
+        let mobProjectsArray = this.getProjects().filter(function (item) {
+            return item === "MobProject";
+        });
+
+        return mobProjectsArray.length;
     }
 
 }
@@ -31,6 +57,7 @@ class Director {
 class Project {
 
     constructor(name) {
+        this.id = id; // Будет counter
         this.name = name;
         this.state = 1;
         this.complexity = this.complexity();
@@ -77,52 +104,42 @@ class Project {
         }
     }
 
-    static projectsInDay() {
-        return Math.floor(Math.random() * 4);
-    }
+    // static projectsInDay() {
+    //     return Math.floor(Math.random() * 4);
+    // }
+    //
+    // static typeProject(n) {
+    //     let typesProjects = ["WebProject", "MobProject"];
+    //     let getProjects = [];
+    //
+    //     while(getProjects.length < n) {
+    //         getProjects.push(typesProjects[Math.floor(Math.random() * typesProjects.length)]);
+    //     }
+    //     return getProjects;
+    // }
+    //
+    // static getProjects() {
+    //     return this.typeProject(this.projectsInDay());
+    // }
 
-    static typeProject(n) {
-        let typesProjects = ["WebProject", "MobProject"];
-        let getProjects = [];
-
-        while(getProjects.length < n) {
-            getProjects.push(typesProjects[Math.floor(Math.random() * typesProjects.length)]);
-        }
-        return getProjects;
-    }
-
-    static getProjects() {
-        return this.typeProject(this.projectsInDay());
-    }
-
-    static countWebProject() {
-
-        let webProjectsArray = this.getProjects().filter(function (item) {
-            return item === "WebProject";
-        });
-
-        return webProjectsArray.length;
-
-    }
-
-    static countMobProject() {
-
-        let mobProjectsArray = this.getProjects().filter(function (item) {
-            return item === "MobProject";
-        });
-
-        return mobProjectsArray.length;
-    }
-
-}
-
-class WebProject extends Project {
-
-
-}
-
-class MobProject extends Project {
-
+    // static countWebProject() {
+    //
+    //     let webProjectsArray = this.getProjects().filter(function (item) {
+    //         return item === "WebProject";
+    //     });
+    //
+    //     return webProjectsArray.length;
+    //
+    // }
+    //
+    // static countMobProject() {
+    //
+    //     let mobProjectsArray = this.getProjects().filter(function (item) {
+    //         return item === "MobProject";
+    //     });
+    //
+    //     return mobProjectsArray.length;
+    // }
 
 }
 
@@ -132,23 +149,34 @@ class Department {
         this.name = name;
     }
 
+    addDeveloper() {
+
+    }
+
+    static delDeveloper() {
+
+        if (Developer.efficiency() === 0) {
+            Developer.changeStatus();
+        }
+    }
+
 }
 
 class WebDepartment extends Department {
 
     constructor(name) {
         super(name);
-        this.freeMobDevelopers = freeMobDevelopers;
-        this.workingMobDevelopers = workingMobDevelopers;
+        this.freeWebDevelopers = freeWebDevelopers;
+        this.workingMobDevelopers = workingWebDevelopers;
         this.projectsInDay = Project.countWebProject();
     }
 
-    static workingMobDepartment() {
+    static workingWebDepartment() {
 
         if (Project.complexity() === 1) {
 
-            this.freeMobDevelopers -= 1;
-            this.workingMobDevelopers += 1;
+            this.freeWebDevelopers -= 1;
+            this.workingWebDevelopers += 1;
 
             Project.closeState(); // Нужно учесть время. Проект закрывается через 1 день
         }
@@ -209,6 +237,7 @@ class QADepartment extends Department {
 class Developer {
 
     constructor(name) {
+        this.id = id; // Будет counter
         this.name = name;
         this.status = 1;
         this.numberProjects = this.numberProjects();
@@ -276,15 +305,6 @@ class QASpecialist extends Developer {
 
 }
 
-class Command {
-
-    constructor(project, persons) {
-        this.project = project;
-        this.persons = persons;
-    }
-
-}
-
 module.exports = {
     Company,
     Director,
@@ -293,11 +313,8 @@ module.exports = {
     MobDepartment,
     QADepartment,
     Project,
-    WebProject,
-    MobProject,
     Developer,
     WebDeveloper,
     MobDeveloper,
     QASpecialist,
-    Command
 };
