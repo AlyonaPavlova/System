@@ -2,14 +2,12 @@
 
 class Company {
 
-    constructor(name, departments, director) {
-        this.name = name;
+    constructor(departments, director) {
         this.departments = departments;
         this.director = director;
     }
 
     static working() {
-
 
         let projectsInDay = Director.getProjects();
 
@@ -36,8 +34,7 @@ class Company {
 
 class Director {
 
-    constructor(name) {
-        this.name = name;
+    constructor() {
         this.projectsCounter = 0;
     }
 
@@ -55,23 +52,17 @@ class Director {
 
     }
 
-    // static createNewProjects(n) {
-    //
-    //     WebProject.count = 0;
-    //     MobProject.count = 0;
-    //
-    //     let typesProjects = [new WebProject(WebProject.count, "WebProject"), new MobProject(MobProject.count, "MobProject")];
-    //     let projects = [];
-    //
-    //     while(projects.length < n) {
-    //         projects.push(typesProjects[Math.floor(Math.random() * typesProjects.length)]);
-    //     }
-    //     return projects;
-    // }
-    //
-    // static getProjects() {
-    //     return this.createNewProjects(this.getRandNumber());
-    // }
+    static getProjects() {
+
+        let projects = [];
+
+        while (projects.length < this.getRandNumber()) {
+
+            projects.push(this.createNewProject());
+        }
+
+        return projects;
+    }
 
 }
 
@@ -82,12 +73,6 @@ class Project {
         this.name = name;
         this.state = 1;
         this.complexity = this.complexity()
-    }
-
-    static getId() {
-
-        Project.count ++;
-        Project.coun = 0;
     }
 
     static openState() {
@@ -110,7 +95,7 @@ class WebProject extends Project {
 
 
 class MobProject extends Project {
-    
+
 }
 
 class Department {
