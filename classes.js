@@ -38,30 +38,40 @@ class Director {
 
     constructor(name) {
         this.name = name;
+        this.projectsCounter = 0;
     }
 
     static getRandNumber() {
         return Math.floor(Math.random() * 4);
     }
 
+    createNewProject() {
 
-    static createNewProjects(n) {
+        this.projectsCounter ++;
 
-        WebProject.count = 0;
-        MobProject.count = 0;
+        let projects = [new WebProject(this.projectsCounter, "WebProject"), new MobProject(this.projectsCounter, "MobProject")];
 
-        let typesProjects = [new WebProject(WebProject.count, "WebProject"), new MobProject(MobProject.count, "MobProject")];
-        let projects = [];
+        return projects[Math.floor(Math.random() * projects.length)];
 
-        while(projects.length < n) {
-            projects.push(typesProjects[Math.floor(Math.random() * typesProjects.length)]);
-        }
-        return projects;
     }
 
-    static getProjects() {
-        return this.createNewProjects(this.getRandNumber());
-    }
+    // static createNewProjects(n) {
+    //
+    //     WebProject.count = 0;
+    //     MobProject.count = 0;
+    //
+    //     let typesProjects = [new WebProject(WebProject.count, "WebProject"), new MobProject(MobProject.count, "MobProject")];
+    //     let projects = [];
+    //
+    //     while(projects.length < n) {
+    //         projects.push(typesProjects[Math.floor(Math.random() * typesProjects.length)]);
+    //     }
+    //     return projects;
+    // }
+    //
+    // static getProjects() {
+    //     return this.createNewProjects(this.getRandNumber());
+    // }
 
 }
 
@@ -71,10 +81,13 @@ class Project {
         this.id = id;
         this.name = name;
         this.state = 1;
-        this.complexity = this.complexity();
-        // this.count = 0;
+        this.complexity = this.complexity()
+    }
+
+    static getId() {
 
         Project.count ++;
+        Project.coun = 0;
     }
 
     static openState() {
@@ -93,13 +106,11 @@ class Project {
 
 class WebProject extends Project {
 
-
 }
 
 
 class MobProject extends Project {
-
-
+    
 }
 
 class Department {
