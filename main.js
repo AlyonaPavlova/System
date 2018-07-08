@@ -27,18 +27,6 @@ function main(n) {
         // console.log(myCompany.departments["WebDept"].projectsInQueue);
         // console.log(myCompany.departments["MobDept"].projectsInQueue);
 
-        if (webProjectsInDay !== 0) {
-
-            if (WebDepartment.freeDevelopers !== 0) {
-
-                freeDevelopers.forEach(function (item) {
-                    freeDevelopers[item].currentProject.push(newProjects[item].id);
-                })
-                // freeDevelopers[0].currentProject.push(projectsInDay[0].id);
-
-            }
-        }
-
         n --;
         console.log("***end Day ***");
 

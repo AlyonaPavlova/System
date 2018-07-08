@@ -152,34 +152,68 @@ class WebDepartment extends Department {
         }
     }
 
+    getDeveloperByProject(projectId) {
+
+        this.busyDevelopers.forEach(function (developer) {
+
+            if(developer.currentProject === projectId) {
+                return developer;
+            }
+            else {
+                return null;
+            }
+
+        });
+    }
+
+    // Вызовем в конце дня
+
+    checkProjectsInProgressStatus() {
+
+        projectsInProgress.forEach(function (project) {
+            project.complexity --;
+
+            if (project.complexity === 0 ) {
+
+                let currentDeveloper = this.getDeveloperByProject(project.id);
+                currentDeveloper.currentProject = "";
+
+                // Добавляем в массив свободных разработчиков разработчика, которого удаляем сплайсом
+
+                this.freeDevelopers.push(this.busyDevelopers.splice(this.busyDevelopers.indexOf(currentDeveloper), 1));
+                currentDeveloper.numberDoneProjects ++;
+
+                this.projectsInProgress.splice(this.projectsInProgress.indexOf(project), 1);
+            }
+        });
+
+
+    }
+
 }
 
 class MobDepartment extends Department {
 
-    workingMobDepartment() {
+    checkDevelopers() {
 
-        if (Project.complexity() === 1) {
+        let queueProjectsLength = this.projectsInQueue.length;
+        let freeDevelopersLength = this.freeDevelopers.length;
 
-            this.freeMobDevelopers -= 1;
-            this.workingMobDevelopers += 1;
+        let difference = Math.abs(queueProjectsLength - freeDevelopersLength);
 
-            Project.closeState();
-        }
+        if (difference === 0) {
 
-        else if (Project.complexity() === 2) {
+            this.projectsInQueue.forEach(function (item) {
 
-            this.freeMobDevelopers -= 2;
-            this.workingMobDevelopers += 3;
+                if (item.complexity === 1) {
+                    while (this.projectsInQueue.length) {
+                        this.appointDeveloper();
+                    }
+                }
+                else if (item.complexity === 2) {
 
-            Project.closeState();
-        }
-
-        else if (Project.complexity() === 3) {
-
-            this.freeMobDevelopers -= 3;
-            this.workingMobDevelopers += 3;
-
-            Project.closeState();
+                }
+            });
         }
     }
 
@@ -194,21 +228,13 @@ class Developer {
     constructor(id) {
         this.id = id;
         this.status = 1;
-        this.currentProject = this.currentProject();
-        this.numberDoneProjects = this.numberDoneProjects();
+        this.currentProject = "";
+        this.numberDoneProjects = 0;
         this.daysIdled = 0;
     }
 
     changeStatus() {
         this.status = 0;
-    }
-
-    currentProject() {
-
-    }
-
-    numberDoneProjects() {
-        
     }
 
 }
