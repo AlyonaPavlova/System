@@ -9,21 +9,19 @@ class Company {
 
 }
 
+let maxNumberProjectsPurDay = 4;
+
 class Director {
 
     constructor() {
         this.projectsCounter = 0;
     }
 
-    getRandNumber() {
-        return Math.floor(Math.random() * 4);
-    }
-
     createNewProject() {
 
         this.projectsCounter ++;
 
-        let projects = [new WebProject(this.projectsCounter, "WebProject"), new MobProject(this.projectsCounter, "MobProject")];
+        let projects = [new WebProject(this.projectsCounter), new MobProject(this.projectsCounter)];
 
         return projects[Math.floor(Math.random() * projects.length)];
 
@@ -31,13 +29,13 @@ class Director {
 
     getProjects(webDeptQueue, mobDeptQueue) {
 
-        let projectsCount = this.getRandNumber();
+        let projectsCount = Math.floor(Math.random() * maxNumberProjectsPurDay);
 
         while (projectsCount) {
 
             let project = this.createNewProject();
 
-            if (project.name === "WebProject") {
+            if (project instanceof WebProject) {
                 webDeptQueue.push(project);
             }
             else {
@@ -46,18 +44,16 @@ class Director {
 
             projectsCount --;
         }
-
     }
 
 }
 
 class Project {
 
-    constructor(id, name) {
+    constructor(id) {
         this.id = id;
-        this.name = name;
         this.state = 1;
-        this.complexity = this.complexity()
+        this.complexity = this.getRandComplexity();
     }
 
     openState() {
@@ -68,7 +64,7 @@ class Project {
         this.stateStatus = 0;
     }
 
-    complexity() {
+    getRandComplexity() {
         return Math.floor(Math.random() * 3) + 1;
     }
 
@@ -105,21 +101,65 @@ class Department {
 
 class WebDepartment extends Department {
 
+    // Возвращаем разработчика, у которого указан передаваемый id проекта
+
+    getDeveloperByProject (projectId) {
+
+        this.busyDevelopers.find(function (developer) {
+
+            return developer.currentProject === projectId;
+        });
+    }
+
+    // Возвращаем проекты, у которых сложность = 0
+
+    returnProjectsWithComplexityNull () {
+
+        this.projectsInProgress.filter(function (project) {
+
+            return project.complexity === 0;
+        });
+    }
+
+    justCompleteProjects () {
+
+        let projectsWithComplexityNull = this.returnProjectsWithComplexityNull();
+
+        projectsWithComplexityNull.forEach(function (project) {
+
+            project.complexity++;
+
+            let currentDeveloper = this.getDeveloperByProject(project.id);
+            currentDeveloper.currentProject = "";
+
+            let deleteDeveloper = this.busyDevelopers.splice(this.busyDevelopers.indexOf(currentDeveloper), 1);
+
+            this.freeDevelopers.push(deleteDeveloper);
+            currentDeveloper.numberDoneProjects++;
+
+            this.projectsInProgress.splice(this.projectsInProgress.indexOf(project), 1);
+        });
+    }
+
     // Присваиваем разработчику id текущего проекта, обнуляем его счетчик дней простоя
     // Удаляем разработчика из массива свободных и добавляем в массив занятых
     // Удаляем проект из массива очереди и добавляем в массив проектов в работе
 
-    appointDeveloper() {
+    appointDeveloper () {
 
         this.freeDevelopers[0].daysIdled = 0;
         this.freeDevelopers[0].currentProject = this.projectsInQueue[0].id;
-        this.busyDevelopers.push(this.freeDevelopers.shift());
-        this.projectsInProgress.push(this.projectsInQueue.shift());
+
+        let deleteFreeDevelopers = this.freeDevelopers.shift();
+        let deleteProjectsInQueue = this.projectsInQueue.shift();
+
+        this.busyDevelopers.push(deleteFreeDevelopers);
+        this.projectsInProgress.push(deleteProjectsInQueue);
     }
 
     // Обрабатываем назначения свободных программистов на проекты
 
-    checkDevelopers() {
+    appointmentDevelopers () {
 
         let queueProjectsLength = this.projectsInQueue.length;
         let freeDevelopersLength = this.freeDevelopers.length;
@@ -147,54 +187,30 @@ class WebDepartment extends Department {
                 this.freeDevelopers.forEach(function (item) {
 
                     item.daysIdled ++;
-                })
+                });
             }
         }
-    }
-
-    getDeveloperByProject(projectId) {
-
-        this.busyDevelopers.forEach(function (developer) {
-
-            if(developer.currentProject === projectId) {
-                return developer;
-            }
-            else {
-                return null;
-            }
-
-        });
-    }
-
-    // Вызовем в конце дня
-
-    checkProjectsInProgressStatus() {
-
-        projectsInProgress.forEach(function (project) {
-            project.complexity --;
-
-            if (project.complexity === 0 ) {
-
-                let currentDeveloper = this.getDeveloperByProject(project.id);
-                currentDeveloper.currentProject = "";
-
-                // Добавляем в массив свободных разработчиков разработчика, которого удаляем сплайсом
-
-                this.freeDevelopers.push(this.busyDevelopers.splice(this.busyDevelopers.indexOf(currentDeveloper), 1));
-                currentDeveloper.numberDoneProjects ++;
-
-                this.projectsInProgress.splice(this.projectsInProgress.indexOf(project), 1);
-            }
-        });
-
-
     }
 
 }
 
 class MobDepartment extends Department {
 
-    checkDevelopers() {
+}
+
+class QADepartment extends Department {
+
+    appointDeveloper() {
+
+        this.freeDevelopers[0].daysIdled = 0;
+        this.freeDevelopers[0].currentProject = this.projectsInQueue[0].id;
+        this.busyDevelopers.push(this.freeDevelopers.shift());
+        this.projectsInProgress.push(this.projectsInQueue.shift());
+    }
+
+    // Обрабатываем назначения свободных программистов на проекты
+
+    static appointmentDevelopers() {
 
         let queueProjectsLength = this.projectsInQueue.length;
         let freeDevelopersLength = this.freeDevelopers.length;
@@ -203,23 +219,65 @@ class MobDepartment extends Department {
 
         if (difference === 0) {
 
-            this.projectsInQueue.forEach(function (item) {
+            while (this.projectsInQueue.length) {
+                this.appointDeveloper();
+            }
+        }
+        else {
 
-                if (item.complexity === 1) {
-                    while (this.projectsInQueue.length) {
-                        this.appointDeveloper();
-                    }
-                }
-                else if (item.complexity === 2) {
+            while (difference) {
+                this.appointDeveloper();
 
-                }
-            });
+                difference --;
+            }
+
+            if (this.projectsInQueue.length) {
+                this.developerToHire = Math.abs(queueProjectsLength - freeDevelopersLength);
+            }
+            else {
+                this.freeDevelopers.forEach(function (item) {
+
+                    item.daysIdled ++;
+                });
+            }
         }
     }
 
-}
+    static moveCompleteProjectsInQA() {
 
-class QADepartment extends Department {
+        while (this.returnCompleteProjects) {
+            this.appointmentDevelopers();
+        }
+    }
+
+    returnProjectsWithComplexityNull() {
+
+        this.projectsInProgress.find(function (project) {
+
+            return project.complexity === 0;
+        });
+    }
+
+    justCompleteProjects() {
+
+        let projectsWithComplexityNull = this.returnProjectsWithComplexityNull();
+
+        projectsWithComplexityNull.forEach(function (project) {
+
+            project.complexity --;
+
+            let currentDeveloper = this.getDeveloperByProject(project.id);
+            currentDeveloper.currentProject = "";
+
+            let deleteDeveloper = this.busyDevelopers.splice(this.busyDevelopers.indexOf(currentDeveloper), 1);
+
+            this.freeDevelopers.push(deleteDeveloper);
+            currentDeveloper.numberDoneProjects ++;
+
+            this.projectsInProgress.splice(this.projectsInProgress.indexOf(project), 1);
+
+        });
+    }
 
 }
 

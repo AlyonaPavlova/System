@@ -14,21 +14,5 @@ const { WebDeveloper } = require("./classes");
 const { MobDeveloper } = require("./classes");
 const { QASpecialist } = require("./classes");
 
-
-function main(n) {
-
-    let myCompany = new Company({"WebDept": new WebDepartment(), "MobDept": new MobDepartment(), "QADept": new QADepartment()}, new Director());
-
-    while (n) {
-
-        console.log("***start Day ***");
-        myCompany.director.getProjects(myCompany.departments["WebDept"].projectsInQueue, myCompany.departments["MobDept"].projectsInQueue);
-
-
-
-        n --;
-        console.log("***end Day ***");
-
-    }
-}
-main(3);
+// console.log(WebDepartment.returnCompleteProjects());
+console.log(QADepartment.moveCompleteProjectsInQA());
