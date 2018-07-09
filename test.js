@@ -13,6 +13,3 @@ const { Developer } = require("./classes");
 const { WebDeveloper } = require("./classes");
 const { MobDeveloper } = require("./classes");
 const { QASpecialist } = require("./classes");
-
-// console.log(WebDepartment.returnCompleteProjects());
-console.log(QADepartment.moveCompleteProjectsInQA());

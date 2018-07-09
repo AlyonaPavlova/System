@@ -200,6 +200,13 @@ class MobDepartment extends Department {
 
 class QADepartment extends Department {
 
+    addNewProjectsToQueue(projectsForTestingArray) {
+
+        projectsForTestingArray.forEach(function (project) {
+            this.projectsInQueue.push(project);
+        });
+    }
+
     appointDeveloper() {
 
         this.freeDevelopers[0].daysIdled = 0;
@@ -210,7 +217,7 @@ class QADepartment extends Department {
 
     // Обрабатываем назначения свободных программистов на проекты
 
-    static appointmentDevelopers() {
+    appointmentDevelopers() {
 
         let queueProjectsLength = this.projectsInQueue.length;
         let freeDevelopersLength = this.freeDevelopers.length;
@@ -240,13 +247,6 @@ class QADepartment extends Department {
                     item.daysIdled ++;
                 });
             }
-        }
-    }
-
-    static moveCompleteProjectsInQA() {
-
-        while (this.returnCompleteProjects) {
-            this.appointmentDevelopers();
         }
     }
 
