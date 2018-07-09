@@ -21,10 +21,7 @@ class Director {
 
         this.projectsCounter ++;
 
-        let projects = [new WebProject(this.projectsCounter), new MobProject(this.projectsCounter)];
-
-        return projects[Math.floor(Math.random() * projects.length)];
-
+        return Math.random() > 0.5 ? new WebProject(this.projectsCounter): new MobProject(this.projectsCounter);
     }
 
     getProjects(webDeptQueue, mobDeptQueue) {
@@ -113,7 +110,7 @@ class WebDepartment extends Department {
 
     // Возвращаем проекты, у которых сложность = 0
 
-    returnProjectsWithComplexityNull () {
+    getProjectsWithComplexityNull () {
 
         this.projectsInProgress.filter(function (project) {
 
@@ -123,19 +120,19 @@ class WebDepartment extends Department {
 
     justCompleteProjects () {
 
-        let projectsWithComplexityNull = this.returnProjectsWithComplexityNull();
+        let nullComplexityProjectsArr = this.getProjectsWithComplexityNull();
 
-        projectsWithComplexityNull.forEach(function (project) {
+        nullComplexityProjectsArr.forEach(function (project) {
 
             project.complexity++;
 
             let currentDeveloper = this.getDeveloperByProject(project.id);
             currentDeveloper.currentProject = "";
-
-            let deleteDeveloper = this.busyDevelopers.splice(this.busyDevelopers.indexOf(currentDeveloper), 1);
-
-            this.freeDevelopers.push(deleteDeveloper);
             currentDeveloper.numberDoneProjects++;
+
+            let freedDeveloper = this.busyDevelopers.splice(this.busyDevelopers.indexOf(currentDeveloper), 1);
+
+            this.freeDevelopers.push(freedDeveloper);
 
             this.projectsInProgress.splice(this.projectsInProgress.indexOf(project), 1);
         });
@@ -150,45 +147,28 @@ class WebDepartment extends Department {
         this.freeDevelopers[0].daysIdled = 0;
         this.freeDevelopers[0].currentProject = this.projectsInQueue[0].id;
 
-        let deleteFreeDevelopers = this.freeDevelopers.shift();
-        let deleteProjectsInQueue = this.projectsInQueue.shift();
+        let firstFreeDeveloper = this.freeDevelopers.shift();
+        let firstProjectInQueue = this.projectsInQueue.shift();
 
-        this.busyDevelopers.push(deleteFreeDevelopers);
-        this.projectsInProgress.push(deleteProjectsInQueue);
+        this.busyDevelopers.push(firstFreeDeveloper);
+        this.projectsInProgress.push(firstProjectInQueue);
     }
 
     // Обрабатываем назначения свободных программистов на проекты
 
     appointmentDevelopers () {
 
-        let queueProjectsLength = this.projectsInQueue.length;
-        let freeDevelopersLength = this.freeDevelopers.length;
+        while (this.projectsInQueue.length && this.freeDevelopers.length) {
+            this.appointDeveloper();
+        }
 
-        let difference = Math.abs(queueProjectsLength - freeDevelopersLength);
-
-        if (difference === 0) {
-
-            while (this.projectsInQueue.length) {
-                this.appointDeveloper();
-            }
+        if (this.projectsInQueue.length) {
+            this.developerToHire = this.projectsInQueue.length;
         }
         else {
-
-            while (difference) {
-                this.appointDeveloper();
-
-                difference --;
-            }
-
-            if (this.projectsInQueue.length) {
-                this.developerToHire = Math.abs(queueProjectsLength - freeDevelopersLength);
-            }
-            else {
-                this.freeDevelopers.forEach(function (item) {
-
-                    item.daysIdled ++;
-                });
-            }
+            this.freeDevelopers.forEach(function (item) {
+                item.daysIdled ++;
+            });
         }
     }
 
@@ -202,9 +182,7 @@ class QADepartment extends Department {
 
     addNewProjectsToQueue(projectsForTestingArray) {
 
-        projectsForTestingArray.forEach(function (project) {
-            this.projectsInQueue.push(project);
-        });
+        this.projectsInQueue.concat(this.projectsInQueue, projectsForTestingArray);
     }
 
     appointDeveloper() {
@@ -275,7 +253,6 @@ class QADepartment extends Department {
             currentDeveloper.numberDoneProjects ++;
 
             this.projectsInProgress.splice(this.projectsInProgress.indexOf(project), 1);
-
         });
     }
 

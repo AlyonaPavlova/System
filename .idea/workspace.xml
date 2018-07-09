@@ -4,10 +4,13 @@
     <list default="true" id="eb0f35f2-9c84-45bc-b86f-9fcad6f26fdc" name="Default" comment="">
 <<<<<<< Updated upstream
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+<<<<<<< Updated upstream
       <change beforePath="$PROJECT_DIR$/classes.js" afterPath="$PROJECT_DIR$/classes.js" />
       <change beforePath="$PROJECT_DIR$/main.js" afterPath="$PROJECT_DIR$/main.js" />
 =======
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
@@ -21,15 +24,20 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="FileEditorManager">
-    <splitter split-orientation="horizontal" split-proportion="0.78348213">
+    <splitter split-orientation="horizontal" split-proportion="0.68675596">
       <split-first>
         <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
           <file leaf-file-name="classes.js" pinned="false" current-in-tab="true">
             <entry file="file://$PROJECT_DIR$/classes.js">
               <provider selected="true" editor-type-id="text-editor">
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
                 <state relative-caret-position="135">
                   <caret line="154" column="25" lean-forward="false" selection-start-line="154" selection-start-column="4" selection-end-line="154" selection-end-column="25" />
+=======
+                <state relative-caret-position="934">
+                  <caret line="165" column="11" lean-forward="true" selection-start-line="165" selection-start-column="11" selection-end-line="165" selection-end-column="11" />
+>>>>>>> Stashed changes
                   <folding />
 =======
                 <state relative-caret-position="405">
@@ -222,18 +230,26 @@
       <workItem from="1530858150341" duration="18488000" />
       <workItem from="1530891841213" duration="7597000" />
       <workItem from="1530965356376" duration="15038000" />
+<<<<<<< Updated upstream
       <workItem from="1531041934735" duration="19160000" />
 =======
       <workItem from="1530858150341" duration="18870000" />
+>>>>>>> Stashed changes
+=======
+      <workItem from="1531041934735" duration="19886000" />
 >>>>>>> Stashed changes
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     <option name="totallyTimeSpent" value="83461000" />
 =======
     <option name="totallyTimeSpent" value="42048000" />
+>>>>>>> Stashed changes
+=======
+    <option name="totallyTimeSpent" value="84187000" />
 >>>>>>> Stashed changes
   </component>
   <component name="ToolWindowManager">
@@ -486,8 +502,13 @@
     <entry file="file://$PROJECT_DIR$/classes.js">
       <provider selected="true" editor-type-id="text-editor">
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
         <state relative-caret-position="135">
           <caret line="154" column="25" lean-forward="false" selection-start-line="154" selection-start-column="4" selection-end-line="154" selection-end-column="25" />
+=======
+        <state relative-caret-position="934">
+          <caret line="165" column="11" lean-forward="true" selection-start-line="165" selection-start-column="11" selection-end-line="165" selection-end-column="11" />
+>>>>>>> Stashed changes
           <folding />
 =======
         <state relative-caret-position="405">

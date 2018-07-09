@@ -24,7 +24,7 @@ function main(n) {
         console.log("***start Day ***");
         myCompany.director.getProjects(myCompany.departments["WebDept"].projectsInQueue, myCompany.departments["MobDept"].projectsInQueue);
 
-        myCompany.departments["QADept"].addNewProjectsToQueue(myCompany.departments["WebDept"].returnProjectsWithComplexityNull());
+        myCompany.departments["QADept"].addNewProjectsToQueue(myCompany.departments["WebDept"].getProjectsWithComplexityNull());
 
         n --;
         console.log("***end Day ***");
