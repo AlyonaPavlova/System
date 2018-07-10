@@ -64,6 +64,7 @@ class Department {
         this.projectsInProgress = [];
         this.freeDevelopers = [];
         this.busyDevelopers = [];
+        this.dismissedDevelopers = [];
         this.developerToHire = 0;
         this.developersCounter = 0;
     }
@@ -79,7 +80,13 @@ class Department {
     }
 
     delDeveloper() {
+        this.freeDevelopers.forEach(function (developer) {
+            if (developer.daysIdled === 3) {
+                let dismissedDeveloper = this.freeDevelopers.splice(this.freeDevelopers.indexOf(developer), 1);
 
+                this.dismissedDevelopers.push(dismissedDeveloper);
+            }
+        });
     }
 
     // Возвращаем разработчика, у которого указан передаваемый id проекта
