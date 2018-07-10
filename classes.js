@@ -79,15 +79,33 @@ class Department {
         }
     }
 
-    delDeveloper() {
-        this.freeDevelopers.forEach(function (developer) {
-            if (developer.daysIdled === 3) {
-                let dismissedDeveloper = this.freeDevelopers.splice(this.freeDevelopers.indexOf(developer), 1);
+    // Удаляем разработчиков, у которых дни простоя = 3
 
-                this.dismissedDevelopers.push(dismissedDeveloper);
-            }
-        });
+    compareNumberDoneProjects(a, b) {
+        return a.numberDoneProjects - b.numberDoneProjects;
     }
+
+    delDeveloper() {
+        let developersForDismissArr = this.freeDevelopers.filter(function (developer) {
+            return developer.daysIdled === 3;
+        });
+
+        let sortDevelopers = developersForDismissArr.sort(this.compareNumberDoneProjects());
+
+        let oneDismissedDeveloper = this.freeDevelopers.splice(this.freeDevelopers.indexOf(sortDevelopers[0]), 1);
+
+        this.dismissedDevelopers.push(oneDismissedDeveloper);
+    }
+
+    // delDeveloper() {
+    //     this.freeDevelopers.forEach(function (developer) {
+    //         if (developer.daysIdled === 3) {
+    //             let dismissedDeveloper = this.freeDevelopers.splice(this.freeDevelopers.indexOf(developer), 1);
+    //
+    //             this.dismissedDevelopers.push(dismissedDeveloper);
+    //         }
+    //     });
+    // }
 
     // Возвращаем разработчика, у которого указан передаваемый id проекта
 
@@ -160,7 +178,51 @@ class WebDepartment extends Department {
 }
 
 class MobDepartment extends Department {
+    justCompleteProjects () {
+        let nullComplexityProjectsArr = this.getProjectsWithComplexityNull();
 
+        nullComplexityProjectsArr.forEach(function (project) {
+            project.complexity++;
+
+            let currentDeveloper = this.getDeveloperByProject(project.id);
+            currentDeveloper.currentProject = "";
+            currentDeveloper.numberDoneProjects++;
+
+            let freedDeveloper = this.busyDevelopers.splice(this.busyDevelopers.indexOf(currentDeveloper), 1);
+
+            this.freeDevelopers.push(freedDeveloper);
+
+            this.projectsInProgress.splice(this.projectsInProgress.indexOf(project), 1);
+        });
+    }
+
+    appointDeveloper () {
+        const dev = this.freeDevelopers.shift();
+        const project = this.projectsInQueue.shift();
+
+        dev.daysIdled = 0;
+        dev.currentProject = project.id;
+
+        this.busyDevelopers.push(dev);
+        this.projectsInProgress.push(project);
+    }
+
+    // Обрабатываем назначение свободных программистов на проекты
+
+    appointmentMobDevelopers () {
+        while (this.projectsInQueue.length && this.freeDevelopers.length) {
+            this.appointDeveloper();
+        }
+
+        if (this.projectsInQueue.length) {
+            this.developerToHire = this.projectsInQueue.length;
+        }
+        else {
+            this.freeDevelopers.forEach(function (item) {
+                item.daysIdled ++;
+            });
+        }
+    }
 }
 
 class QADepartment extends Department {
@@ -190,14 +252,9 @@ class QADepartment extends Department {
 class Developer {
     constructor(id) {
         this.id = id;
-        this.status = 1;
         this.currentProject = "";
         this.numberDoneProjects = 0;
         this.daysIdled = 0;
-    }
-
-    changeStatus() {
-        this.status = 0;
     }
 }
 

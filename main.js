@@ -32,7 +32,9 @@ function main(n) {
 
         // Удаляем разработчиков, у которых дни простоя = 3
 
-
+        myCompany.departments["WebDept"].delDeveloper();
+        myCompany.departments["MobDept"].delDeveloper();
+        myCompany.departments["QADept"].delDeveloper();
 
         // Проходимся по веб-проектам с нулевой сложностью, сплайсим и пушим проекты и разработчиков
 
@@ -44,13 +46,31 @@ function main(n) {
             console.log("Array with web-projects is empty");
         }
 
+        // Проходимся по  моб-проектам с нулевой сложностью, сплайсим и пушим проекты и разработчиков
+
+        if (myCompany.departments["MobDept"].getProjectsWithComplexityNull() === []) {
+            myCompany.departments["MobDept"].justCompleteProjects();
+        }
+
+        else {
+            console.log("Array with mob-projects is empty");
+        }
+
         // Обрабатываем назначение свободных программистов на проекты в веб-отделе
 
         myCompany.departments["WebDept"].appointmentDevelopers();
 
+        // Обрабатываем назначение свободных программистов на проекты в моб-отделе
+
+
+
         // Передаем проекты с нулевой сложностью из веб-отдела в отдел тестирования
 
         myCompany.departments["QADept"].addNewProjectsToQueue(myCompany.departments["WebDept"].getProjectsWithComplexityNull());
+
+        // Передаем проекты с нулевой сложностью из моб-отдела в отдел тестирования
+
+        myCompany.departments["QADept"].addNewProjectsToQueue(myCompany.departments["MobDept"].getProjectsWithComplexityNull());
 
         // Проходимся по проектам с нулевой сложностью, сплайсим и пушим проекты и разработчиков
 
