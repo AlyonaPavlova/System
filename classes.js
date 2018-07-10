@@ -41,16 +41,7 @@ class Director {
 class Project {
     constructor(id) {
         this.id = id;
-        this.state = 1;
         this.complexity = this.getRandComplexity();
-    }
-
-    openState() {
-        this.stateStatus = 1;
-    }
-
-    closeState() {
-        this.stateStatus = 0;
     }
 
     getRandComplexity() {
@@ -74,6 +65,21 @@ class Department {
         this.freeDevelopers = [];
         this.busyDevelopers = [];
         this.developerToHire = 0;
+        this.developersCounter = 0;
+    }
+
+    //  Проверяем, сколько разработчиков нужно нанять (хранится в свойстве this.developerToHire)
+
+    addDeveloper() {
+        this.developersCounter ++;
+
+        while (this.developerToHire) {
+            this.freeDevelopers.push(new Developer(this.developersCounter));
+        }
+    }
+
+    delDeveloper() {
+
     }
 
     // Возвращаем разработчика, у которого указан передаваемый id проекта
@@ -123,14 +129,6 @@ class Department {
                 item.daysIdled ++;
             });
         }
-    }
-
-    addDeveloper() {
-
-    }
-
-    delDeveloper() {
-
     }
 }
 

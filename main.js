@@ -14,7 +14,6 @@ const { WebDeveloper } = require("./classes");
 const { MobDeveloper } = require("./classes");
 const { QASpecialist } = require("./classes");
 
-
 function main(n) {
     let myCompany = new Company({"WebDept": new WebDepartment(), "MobDept": new MobDepartment(), "QADept": new QADepartment()}, new Director());
 
@@ -25,7 +24,17 @@ function main(n) {
 
         myCompany.director.getProjects(myCompany.departments["WebDept"].projectsInQueue, myCompany.departments["MobDept"].projectsInQueue);
 
-        // Проходимся по проектам с нулевой сложностью, сплайсим и пушим проекты и разработчиков
+        // Проверяем, сколько разработчиков нам надо нанять со вчерашнего дня
+
+        myCompany.departments["WebDept"].addDeveloper();
+        myCompany.departments["MobDept"].addDeveloper();
+        myCompany.departments["QADept"].addDeveloper();
+
+        // Удаляем разработчиков, у которых дни простоя = 3
+
+
+
+        // Проходимся по веб-проектам с нулевой сложностью, сплайсим и пушим проекты и разработчиков
 
         if (myCompany.departments["WebDept"].getProjectsWithComplexityNull() === []) {
             myCompany.departments["WebDept"].justCompleteProjects();
