@@ -79,9 +79,9 @@ class Department {
         }
     }
 
-    // compareNumberDoneProjects(a, b) {
-    //     return a.numberDoneProjects - b.numberDoneProjects;
-    // }
+    compareNumberDoneProjects(a, b) {
+        return a.numberDoneProjects - b.numberDoneProjects;
+    }
 
     // Удаляем разработчиков, у которых дни простоя = 3
 
@@ -95,7 +95,7 @@ class Department {
             console.log("Array with developers is empty");
         }
         else {
-            let sortDevelopers = developersForDismissArr.sort(Developer.compareNumberDoneProjects);
+            let sortDevelopers = developersForDismissArr.sort(this.compareNumberDoneProjects());
 
             let oneDismissedDeveloper = this.freeDevelopers.splice(this.freeDevelopers.indexOf(sortDevelopers[0]), 1);
 
@@ -251,10 +251,6 @@ class Developer {
         this.currentProject = "";
         this.numberDoneProjects = 0;
         this.daysIdled = 0;
-    }
-
-    compareNumberDoneProjects(a, b) {
-        return a.numberDoneProjects - b.numberDoneProjects;
     }
 }
 
