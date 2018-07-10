@@ -20,19 +20,23 @@ function main(n) {
     while (n) {
         console.log("***start Day ***");
 
-        // Генерация проектов на каждый день
+        // Генерация проектов на каждый день. Заполнение массивов в объектах отделов
 
         myCompany.director.getProjects(myCompany.departments["WebDept"].projectsInQueue, myCompany.departments["MobDept"].projectsInQueue);
 
         // Проверяем, сколько разработчиков нам надо нанять со вчерашнего дня
 
-        myCompany.departments["WebDept"].addDeveloper();
-        myCompany.departments["MobDept"].addDeveloper();
-        myCompany.departments["QADept"].addDeveloper();
+        myCompany.departments.forEach(function (department) {
+            department.addDeveloper();
+        });
+
+        // myCompany.departments["WebDept"].addDeveloper();
+        // myCompany.departments["MobDept"].addDeveloper();
+        // myCompany.departments["QADept"].addDeveloper();
 
         // Проходимся по веб-проектам с нулевой сложностью, сплайсим и пушим проекты и разработчиков
 
-        if (myCompany.departments["WebDept"].getProjectsWithComplexityNull() === []) {
+        if (myCompany.departments["WebDept"].getProjectsWithComplexityNull().length) {
             myCompany.departments["WebDept"].justCompleteProjects();
         }
 

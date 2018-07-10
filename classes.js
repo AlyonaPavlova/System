@@ -36,6 +36,10 @@ class Director {
             projectsCount --;
         }
     }
+
+    moveProjectsToQA() {
+
+    }
 }
 
 class Project {
@@ -94,7 +98,7 @@ class Department {
 
         console.log(developersForDismissArr);
         if (developersForDismissArr.length) {
-            let sortDevelopers = developersForDismissArr.sort(this.compareNumberDoneProjects());
+            let sortDevelopers = developersForDismissArr.sort(this.compareNumberDoneProjects);
 
             let oneDismissedDeveloper = this.freeDevelopers.splice(this.freeDevelopers.indexOf(sortDevelopers[0]), 1);
 
@@ -108,18 +112,30 @@ class Department {
     // Возвращаем разработчика, у которого указан передаваемый id проекта
 
     getDeveloperByProject (projectId) {
-        this.busyDevelopers.find(function (developer) {
+        return this.busyDevelopers.find(function (developer) {
             return developer.currentProject === projectId;
         });
     }
 
     // Возвращаем проекты, у которых сложность = 0
 
+    // getProjectsWithComplexityNull () {
+    //     return this.projectsInProgress.filter(function (project) {
+    //         return project.complexity === 0;
+    //     });
+    // }
+
+    cleanClosedProjects() {
+        for (let index = 0; index < this.projectsInProgress.length; index++) {
+            if (this.projectsInProgress[i].complexity === 0) {
+                this.projectsInProgress.splice(i, 1);
+                index--;
+            }
+        }
+    }
+
     getProjectsWithComplexityNull () {
-        this.projectsInProgress.filter(function (project) {
-            return project.complexity === 0;
-        });
-        return [];
+        return this.cleanClosedProjects();
     }
 
     // Присваиваем разработчику id текущего проекта, обнуляем его счетчик дней простоя
