@@ -85,10 +85,6 @@ class Department {
 
     // Удаляем разработчиков, у которых дни простоя = 3
 
-    compareNumberDoneProjects(a, b) {
-        return a.numberDoneProjects - b.numberDoneProjects;
-    }
-
     delDeveloper() {
         let developersForDismissArr = this.freeDevelopers.filter(function (developer) {
             return developer.daysIdled === 3;
@@ -98,7 +94,7 @@ class Department {
         if (developersForDismissArr.length) {
             let sortDevelopers = developersForDismissArr.sort(this.compareNumberDoneProjects());
 
-        let oneDismissedDeveloper = this.freeDevelopers.splice(this.freeDevelopers.indexOf(sortDevelopers[0]), 1);
+            let oneDismissedDeveloper = this.freeDevelopers.splice(this.freeDevelopers.indexOf(sortDevelopers[0]), 1);
 
             this.dismissedDevelopers.push(oneDismissedDeveloper);
         }
@@ -106,16 +102,6 @@ class Department {
             console.log("Array with developers is empty");
         }
     }
-
-    // delDeveloper() {
-    //     this.freeDevelopers.forEach(function (developer) {
-    //         if (developer.daysIdled === 3) {
-    //             let dismissedDeveloper = this.freeDevelopers.splice(this.freeDevelopers.indexOf(developer), 1);
-    //
-    //             this.dismissedDevelopers.push(dismissedDeveloper);
-    //         }
-    //     });
-    // }
 
     // Возвращаем разработчика, у которого указан передаваемый id проекта
 
@@ -217,11 +203,64 @@ class MobDepartment extends Department {
         this.projectsInProgress.push(project);
     }
 
+    appointTwoDevelopers () {
+        const dev1 = this.freeDevelopers.shift();
+        const dev2 = this.freeDevelopers.shift();
+        const project = this.projectsInQueue.shift();
+
+        dev1.daysIdled = 0;
+        dev2.daysIdled = 0;
+        dev1.currentProject = project.id;
+        dev2.currentProject = project.id;
+
+        this.busyDevelopers.push(dev1);
+        this.busyDevelopers.push(dev2);
+        this.projectsInProgress.push(project);
+    }
+
+    appointThreeDevelopers () {
+        const dev1 = this.freeDevelopers.shift();
+        const dev2 = this.freeDevelopers.shift();
+        const dev3 = this.freeDevelopers.shift();
+        const project = this.projectsInQueue.shift();
+
+        dev1.daysIdled = 0;
+        dev2.daysIdled = 0;
+        dev3.daysIdled = 0;
+        dev1.currentProject = project.id;
+        dev2.currentProject = project.id;
+        dev3.currentProject = project.id;
+
+        this.busyDevelopers.push(dev1);
+        this.busyDevelopers.push(dev2);
+        this.busyDevelopers.push(dev3);
+        this.projectsInProgress.push(project);
+    }
+
+
     // Обрабатываем назначение свободных программистов на проекты
 
     appointmentMobDevelopers () {
-        while (this.projectsInQueue.length && this.freeDevelopers.length) {
+        let projectsOneComplexityArr = this.projectsInQueue.filter(function (project) {
+            return project.complexity === 1;
+        });
+        let projectsTwoComplexityArr = this.projectsInQueue.filter(function (project) {
+            return project.complexity === 2;
+        });
+        let projectsThreeComplexityArr = this.projectsInQueue.filter(function (project) {
+            return project.complexity === 3;
+        });
+
+        while (projectsOneComplexityArr.length && this.freeDevelopers.length) {
             this.appointDeveloper();
+        }
+
+        while (projectsTwoComplexityArr.length && this.freeDevelopers.length) {
+            this.appointTwoDevelopers();
+        }
+
+        while (projectsThreeComplexityArr.length && this.freeDevelopers.length) {
+            this.appointThreeDevelopers();
         }
 
         if (this.projectsInQueue.length) {
