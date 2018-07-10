@@ -27,7 +27,13 @@ function main(n) {
 
         // Проходимся по проектам с нулевой сложностью, сплайсим и пушим проекты и разработчиков
 
-        myCompany.departments["WebDept"].justCompleteProjects();
+        if (myCompany.departments["WebDept"].getProjectsWithComplexityNull() === []) {
+            myCompany.departments["WebDept"].justCompleteProjects();
+        }
+
+        else {
+            console.log("Array with web-projects is empty");
+        }
 
         // Обрабатываем назначение свободных программистов на проекты в веб-отделе
 
@@ -39,7 +45,13 @@ function main(n) {
 
         // Проходимся по проектам с нулевой сложностью, сплайсим и пушим проекты и разработчиков
 
-        myCompany.departments["QADept"].justCompleteProjects();
+        if (myCompany.departments["QADept"].getProjectsWithComplexityNull() === []) {
+            myCompany.departments["QADept"].justCompleteProjects();
+        }
+
+        else {
+            console.log("Array with QA is empty");
+        }
 
         // Обрабатываем назначение свободных программистов на проекты в веб-отделе
 

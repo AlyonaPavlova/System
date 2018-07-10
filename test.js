@@ -26,10 +26,12 @@ function main(n) {
 
         // Проходимся по проектам с нулевой сложностью, сплайсим и пушим проекты и разработчиков
 
-        if (myCompany.departments["WebDept"].getProjectsWithComplexityNull !== null) {
-
+        if (myCompany.departments["WebDept"].getProjectsWithComplexityNull() === []) {
             myCompany.departments["WebDept"].justCompleteProjects();
+        }
 
+        else {
+            console.log("Array is empty");
         }
 
 

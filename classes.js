@@ -76,16 +76,6 @@ class Department {
         this.developerToHire = 0;
     }
 
-    addDeveloper() {
-
-    }
-
-    delDeveloper() {
-
-    }
-}
-
-class WebDepartment extends Department {
     // Возвращаем разработчика, у которого указан передаваемый id проекта
 
     getDeveloperByProject (projectId) {
@@ -100,25 +90,7 @@ class WebDepartment extends Department {
         this.projectsInProgress.filter(function (project) {
             return project.complexity === 0;
         });
-        return null;
-    }
-
-    justCompleteProjects () {
-        let nullComplexityProjectsArr = this.getProjectsWithComplexityNull();
-
-        nullComplexityProjectsArr.forEach(function (project) {
-            project.complexity++;
-
-            let currentDeveloper = this.getDeveloperByProject(project.id);
-            currentDeveloper.currentProject = "";
-            currentDeveloper.numberDoneProjects++;
-
-            let freedDeveloper = this.busyDevelopers.splice(this.busyDevelopers.indexOf(currentDeveloper), 1);
-
-            this.freeDevelopers.push(freedDeveloper);
-
-            this.projectsInProgress.splice(this.projectsInProgress.indexOf(project), 1);
-        });
+        return [];
     }
 
     // Присваиваем разработчику id текущего проекта, обнуляем его счетчик дней простоя
@@ -152,6 +124,34 @@ class WebDepartment extends Department {
             });
         }
     }
+
+    addDeveloper() {
+
+    }
+
+    delDeveloper() {
+
+    }
+}
+
+class WebDepartment extends Department {
+    justCompleteProjects () {
+        let nullComplexityProjectsArr = this.getProjectsWithComplexityNull();
+
+        nullComplexityProjectsArr.forEach(function (project) {
+            project.complexity++;
+
+            let currentDeveloper = this.getDeveloperByProject(project.id);
+            currentDeveloper.currentProject = "";
+            currentDeveloper.numberDoneProjects++;
+
+            let freedDeveloper = this.busyDevelopers.splice(this.busyDevelopers.indexOf(currentDeveloper), 1);
+
+            this.freeDevelopers.push(freedDeveloper);
+
+            this.projectsInProgress.splice(this.projectsInProgress.indexOf(project), 1);
+        });
+    }
 }
 
 class MobDepartment extends Department {
@@ -163,42 +163,8 @@ class QADepartment extends Department {
         this.projectsInQueue.concat(this.projectsInQueue, projectsForTestingArray);
     }
 
-    appointDeveloper () {
-        const dev = this.freeDevelopers.shift();
-        const project = this.projectsInQueue.shift();
-
-        dev.daysIdled = 0;
-        dev.currentProject = project.id;
-
-        this.busyDevelopers.push(dev);
-        this.projectsInProgress.push(project);
-    }
-
-    // Обрабатываем назначение свободных программистов на проекты
-
-    appointmentDevelopers () {
-        while (this.projectsInQueue.length && this.freeDevelopers.length) {
-            this.appointDeveloper();
-        }
-
-        if (this.projectsInQueue.length) {
-            this.developerToHire = this.projectsInQueue.length;
-        }
-        else {
-            this.freeDevelopers.forEach(function (item) {
-                item.daysIdled ++;
-            });
-        }
-    }
-
-    returnProjectsWithComplexityNull() {
-        this.projectsInProgress.find(function (project) {
-            return project.complexity === 0;
-        });
-    }
-
     justCompleteProjects() {
-        let projectsWithComplexityNull = this.returnProjectsWithComplexityNull();
+        let projectsWithComplexityNull = this.getProjectsWithComplexityNull();
 
         projectsWithComplexityNull.forEach(function (project) {
             project.complexity --;
