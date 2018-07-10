@@ -76,6 +76,8 @@ class Department {
 
         while (this.developerToHire) {
             this.freeDevelopers.push(new Developer(this.developersCounter));
+
+            this.developerToHire --;
         }
     }
 

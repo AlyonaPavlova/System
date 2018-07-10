@@ -30,12 +30,6 @@ function main(n) {
         myCompany.departments["MobDept"].addDeveloper();
         myCompany.departments["QADept"].addDeveloper();
 
-        // Удаляем разработчика, у которого дни простоя = 3 (самого неопытного)
-
-        myCompany.departments["WebDept"].delDeveloper();
-        myCompany.departments["MobDept"].delDeveloper();
-        myCompany.departments["QADept"].delDeveloper();
-
         // Проходимся по веб-проектам с нулевой сложностью, сплайсим и пушим проекты и разработчиков
 
         if (myCompany.departments["WebDept"].getProjectsWithComplexityNull() === []) {
@@ -56,14 +50,6 @@ function main(n) {
             console.log("Array with mob-projects is empty");
         }
 
-        // Обрабатываем назначение свободных программистов на проекты в веб-отделе
-
-        myCompany.departments["WebDept"].appointmentDevelopers();
-
-        // Обрабатываем назначение свободных программистов на проекты в моб-отделе
-
-
-
         // Передаем проекты с нулевой сложностью из веб-отдела в отдел тестирования
 
         myCompany.departments["QADept"].addNewProjectsToQueue(myCompany.departments["WebDept"].getProjectsWithComplexityNull());
@@ -72,7 +58,15 @@ function main(n) {
 
         myCompany.departments["QADept"].addNewProjectsToQueue(myCompany.departments["MobDept"].getProjectsWithComplexityNull());
 
-        // Проходимся по проектам с нулевой сложностью, сплайсим и пушим проекты и разработчиков
+        // Обрабатываем назначение свободных программистов на проекты в веб-отделе
+
+        myCompany.departments["WebDept"].appointmentDevelopers();
+
+        // Обрабатываем назначение свободных программистов на проекты в моб-отделе
+
+        myCompany.departments["MobDept"].appointmentMobDevelopers();
+
+        // Проходимся по проектам (QA) с нулевой сложностью, сплайсим и пушим проекты и разработчиков
 
         if (myCompany.departments["QADept"].getProjectsWithComplexityNull() === []) {
             myCompany.departments["QADept"].justCompleteProjects();
@@ -82,9 +76,12 @@ function main(n) {
             console.log("Array with QA is empty");
         }
 
-        // Обрабатываем назначение свободных программистов на проекты в веб-отделе
+        // Удаляем разработчика, у которого дни простоя = 3 (самого неопытного)
 
-        myCompany.departments["QADept"].appointmentDevelopers();
+        myCompany.departments["WebDept"].delDeveloper();
+        myCompany.departments["MobDept"].delDeveloper();
+        myCompany.departments["QADept"].delDeveloper();
+
 
 
 
