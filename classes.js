@@ -91,15 +91,15 @@ class Department {
         });
 
         console.log(developersForDismissArr);
-        if (developersForDismissArr === []) {
-            console.log("Array with developers is empty");
-        }
-        else {
+        if (developersForDismissArr.length) {
             let sortDevelopers = developersForDismissArr.sort(this.compareNumberDoneProjects());
 
             let oneDismissedDeveloper = this.freeDevelopers.splice(this.freeDevelopers.indexOf(sortDevelopers[0]), 1);
 
             this.dismissedDevelopers.push(oneDismissedDeveloper);
+        }
+        else {
+            console.log("Array with developers is empty");
         }
     }
 
