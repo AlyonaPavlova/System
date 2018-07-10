@@ -79,6 +79,10 @@ class Department {
         }
     }
 
+    compareNumberDoneProjects(a, b) {
+        return a.numberDoneProjects - b.numberDoneProjects;
+    }
+
     // Удаляем разработчиков, у которых дни простоя = 3
 
     compareNumberDoneProjects(a, b) {
@@ -90,11 +94,17 @@ class Department {
             return developer.daysIdled === 3;
         });
 
-        let sortDevelopers = developersForDismissArr.sort(this.compareNumberDoneProjects());
+        console.log(developersForDismissArr);
+        if (developersForDismissArr.length) {
+            let sortDevelopers = developersForDismissArr.sort(this.compareNumberDoneProjects());
 
         let oneDismissedDeveloper = this.freeDevelopers.splice(this.freeDevelopers.indexOf(sortDevelopers[0]), 1);
 
-        this.dismissedDevelopers.push(oneDismissedDeveloper);
+            this.dismissedDevelopers.push(oneDismissedDeveloper);
+        }
+        else {
+            console.log("Array with developers is empty");
+        }
     }
 
     // delDeveloper() {

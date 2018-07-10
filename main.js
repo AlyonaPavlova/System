@@ -30,7 +30,7 @@ function main(n) {
         myCompany.departments["MobDept"].addDeveloper();
         myCompany.departments["QADept"].addDeveloper();
 
-        // Удаляем разработчиков, у которых дни простоя = 3
+        // Удаляем разработчика, у которого дни простоя = 3 (самого неопытного)
 
         myCompany.departments["WebDept"].delDeveloper();
         myCompany.departments["MobDept"].delDeveloper();
