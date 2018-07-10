@@ -79,29 +79,33 @@ class Department {
         }
     }
 
-    // compareNumberDoneProjects(a, b) {
-    //     return a.numberDoneProjects - b.numberDoneProjects;
-    // }
-
     // Удаляем разработчиков, у которых дни простоя = 3
+
+    compareNumberDoneProjects(a, b) {
+        return a.numberDoneProjects - b.numberDoneProjects;
+    }
 
     delDeveloper() {
         let developersForDismissArr = this.freeDevelopers.filter(function (developer) {
             return developer.daysIdled === 3;
         });
 
-        console.log(developersForDismissArr);
-        if (developersForDismissArr === []) {
-            console.log("Array with developers is empty");
-        }
-        else {
-            let sortDevelopers = developersForDismissArr.sort(Developer.compareNumberDoneProjects);
+        let sortDevelopers = developersForDismissArr.sort(this.compareNumberDoneProjects());
 
-            let oneDismissedDeveloper = this.freeDevelopers.splice(this.freeDevelopers.indexOf(sortDevelopers[0]), 1);
+        let oneDismissedDeveloper = this.freeDevelopers.splice(this.freeDevelopers.indexOf(sortDevelopers[0]), 1);
 
-            this.dismissedDevelopers.push(oneDismissedDeveloper);
-        }
+        this.dismissedDevelopers.push(oneDismissedDeveloper);
     }
+
+    // delDeveloper() {
+    //     this.freeDevelopers.forEach(function (developer) {
+    //         if (developer.daysIdled === 3) {
+    //             let dismissedDeveloper = this.freeDevelopers.splice(this.freeDevelopers.indexOf(developer), 1);
+    //
+    //             this.dismissedDevelopers.push(dismissedDeveloper);
+    //         }
+    //     });
+    // }
 
     // Возвращаем разработчика, у которого указан передаваемый id проекта
 
@@ -251,10 +255,6 @@ class Developer {
         this.currentProject = "";
         this.numberDoneProjects = 0;
         this.daysIdled = 0;
-    }
-
-    compareNumberDoneProjects(a, b) {
-        return a.numberDoneProjects - b.numberDoneProjects;
     }
 }
 
