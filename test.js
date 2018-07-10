@@ -13,3 +13,39 @@ const { Developer } = require("./classes");
 const { WebDeveloper } = require("./classes");
 const { MobDeveloper } = require("./classes");
 const { QASpecialist } = require("./classes");
+
+function main(n) {
+    let myCompany = new Company({"WebDept": new WebDepartment(), "MobDept": new MobDepartment(), "QADept": new QADepartment()}, new Director());
+
+    while (n) {
+        console.log("***start Day ***");
+
+        // Генерация проектов на каждый день
+
+        myCompany.director.getProjects(myCompany.departments["WebDept"].projectsInQueue, myCompany.departments["MobDept"].projectsInQueue);
+
+        // Проходимся по проектам с нулевой сложностью, сплайсим и пушим проекты и разработчиков
+
+        if (myCompany.departments["WebDept"].getProjectsWithComplexityNull !== null) {
+
+            myCompany.departments["WebDept"].justCompleteProjects();
+
+        }
+
+
+
+        // Обрабатываем назначение свободных программистов на проекты в веб-отделе
+
+        // myCompany.departments["WebDept"].appointmentDevelopers();
+
+        // Передаем проекты с нулевой сложностью из веб-отдела в отдел тестирования
+
+        // myCompany.departments["QADept"].addNewProjectsToQueue(myCompany.departments["WebDept"].getProjectsWithComplexityNull());
+
+
+
+        n --;
+        console.log("***end Day ***");
+    }
+}
+main(3);

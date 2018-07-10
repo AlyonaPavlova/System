@@ -17,6 +17,7 @@ module.exports = {
         "comma-dangle": "error",
         "no-var": "error",
         "indent": ["error", 4, {"SwitchCase": 1}],
+        "padded-blocks": ["error", "never"],
         "quotes": [
             "error",
             "double"
