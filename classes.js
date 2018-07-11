@@ -89,7 +89,7 @@ class Department {
 
     delDeveloper() {
         let developersForDismissArr = this.freeDevelopers.filter(function (developer) {
-            return developer.daysIdled = 3;
+            developer.daysIdled = 3;
         });
 
         if (developersForDismissArr.length) {
@@ -98,6 +98,9 @@ class Department {
             let oneDismissedDeveloper = this.freeDevelopers.splice(this.freeDevelopers.indexOf(sortDevelopers[0]), 1);
 
             this.dismissedDevelopers.push(oneDismissedDeveloper);
+        }
+        else {
+            console.log("Not developers for dismiss");
         }
     }
 
