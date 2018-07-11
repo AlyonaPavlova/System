@@ -46,13 +46,9 @@ function main(n) {
 
         //  Уменьшаем сложность у проектов в прогрессе
 
-        myCompany.departments["WebDept"].reduceComplexityProjects();
-        myCompany.departments["MobDept"].reduceComplexityProjects();
-        myCompany.departments["QADept"].reduceComplexityProjects();
-
-        // myCompany.departments.forEach(function (department) {
-        //     department.reduceComplexityProjects();
-        // });
+        for (let department in myCompany.departments) {
+            myCompany.departments[department].reduceComplexityProjects();
+        }
 
         // Проходимся по веб-проектам с нулевой сложностью, сплайсим и пушим проекты и разработчиков
 
@@ -89,23 +85,15 @@ function main(n) {
 
         // Удаляем разработчика, у которого дни простоя = 3 (самого неопытного)
 
-        myCompany.departments["WebDept"].delDeveloper();
-        myCompany.departments["MobDept"].delDeveloper();
-        myCompany.departments["QADept"].delDeveloper();
-
-        // myCompany.departments.forEach(function (department) {
-        //     department.delDeveloper();
-        // });
+        for (let department in myCompany.departments) {
+            myCompany.departments[department].delDeveloper();
+        }
 
         // Нанимаем разработчиков
 
-        myCompany.departments["WebDept"].addDeveloper();
-        myCompany.departments["MobDept"].addDeveloper();
-        myCompany.departments["QADept"].addDeveloper();
-
-        // myCompany.departments.forEach(function (department) {
-        //     department.addDeveloper();
-        // });
+        for (let department in myCompany.departments) {
+            myCompany.departments[department].addDeveloper();
+        }
 
 
 
