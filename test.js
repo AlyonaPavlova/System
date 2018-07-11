@@ -71,6 +71,8 @@ function main(n) {
         console.log(myCompany.departments["WebDept"].projectsInProgress);
         console.log(" Проекты в прогрессе в отделе тестирования");
         console.log(myCompany.departments["QADept"].projectsInProgress);
+        console.log(" Проекты в очереди в отделе тестирования");
+        console.log(myCompany.departments["QADept"].projectsInQueue);
 
         //  Уменьшаем сложность у проектов в прогрессе
 
@@ -87,16 +89,19 @@ function main(n) {
         // Проходимся по веб-проектам с нулевой сложностью, сплайсим и пушим проекты и разработчиков
 
         if (myCompany.departments["WebDept"].getProjectsWithComplexityNull().length) {
-            myCompany.departments["WebDept"].cleanClosedProjects();
             myCompany.departments["WebDept"].moveWebAndMobDevelopers();
             myCompany.departments["QADept"].receivingWebAndMobProjects(myCompany.departments["WebDept"].getProjectsWithComplexityNull());
+            myCompany.departments["WebDept"].cleanClosedProjects();
+            myCompany.departments["WebDept"].cleanFreeDevelopers();
         }
 
         // Проходимся по проектам (QA) с нулевой сложностью, сплайсим и пушим проекты и разработчиков
 
         if (myCompany.departments["QADept"].getProjectsWithComplexityNull().length) {
-            myCompany.departments["QADept"].cleanClosedProjects();
             myCompany.departments["QADept"].moveDevelopers();
+            myCompany.departments["QADept"].cleanClosedProjects();
+            myCompany.departments["WebDept"].cleanFreeDevelopers();
+
         }
 
         console.log("\n");
@@ -151,4 +156,4 @@ function main(n) {
         console.log("\n ||\n ||\n");
     }
 }
-main(5);
+main(7);

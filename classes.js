@@ -7,7 +7,7 @@ class Company {
     }
 }
 
-let maxNumberProjectsPurDay = 4;
+let maxNumberProjectsPerDay = 4;
 
 class Director {
     constructor() {
@@ -21,7 +21,7 @@ class Director {
     }
 
     getProjects(webDeptQueue) {
-        let projectsCount = Math.floor(Math.random() * maxNumberProjectsPurDay);
+        let projectsCount = Math.floor(Math.random() * maxNumberProjectsPerDay);
 
         while (projectsCount) {
             let project = this.createNewProject();
@@ -89,19 +89,15 @@ class Department {
 
     delDeveloper() {
         let developersForDismissArr = this.freeDevelopers.filter(function (developer) {
-            return developer.daysIdled === 3;
+            return developer.daysIdled = 3;
         });
 
-        console.log(developersForDismissArr);
         if (developersForDismissArr.length) {
             let sortDevelopers = developersForDismissArr.sort(this.compareNumberDoneProjects);
 
             let oneDismissedDeveloper = this.freeDevelopers.splice(this.freeDevelopers.indexOf(sortDevelopers[0]), 1);
 
             this.dismissedDevelopers.push(oneDismissedDeveloper);
-        }
-        else {
-            console.log("Array with developers is empty");
         }
     }
 
@@ -170,19 +166,29 @@ class Department {
         });
     }
 
+    cleanFreeDevelopers() {
+        for (let i = 0; i < this.busyDevelopers.length; i++) {
+            if (this.busyDevelopers[i].currentProject === "") {
+                this.busyDevelopers[i].numberDoneProjects++;
+                this.busyDevelopers.splice(i,1);
+                i--;
+            }
+        }
+    }
+
     moveWebAndMobDevelopers () {
         let nullComplexityProjectsArr = this.getProjectsWithComplexityNull();
+        let busyDevelopersArr = this.busyDevelopers;
+        let freeDevelopersArr = this.freeDevelopers;
 
         nullComplexityProjectsArr.forEach(function (project) {
             project.complexity++;
 
-            let currentDeveloper = this.getDeveloperByProject(project.id);
-            currentDeveloper.currentProject = "";
-            currentDeveloper.numberDoneProjects++;
+            let currentDeveloper = busyDevelopersArr.find(function (developer) {
+                return developer.currentProject === project.id;
+            });
 
-            let freedDeveloper = this.busyDevelopers.splice(this.busyDevelopers.indexOf(currentDeveloper), 1);
-
-            this.freeDevelopers.push(freedDeveloper);
+            freeDevelopersArr.push(currentDeveloper);
         });
     }
 }
