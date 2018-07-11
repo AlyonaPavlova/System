@@ -85,17 +85,25 @@ class Department {
         return a.numberDoneProjects - b.numberDoneProjects;
     }
 
+    getDeveloperById (developerId) {
+        return this.freeDevelopers.find(function (developer) {
+            return developer.id === developerId;
+        });
+    }
+
     // Удаляем разработчиков, у которых дни простоя = 3
 
     delDeveloper() {
         let developersForDismissArr = this.freeDevelopers.filter(function (developer) {
-            developer.daysIdled = 3;
+            return developer.daysIdled === 3;
+
         });
 
         if (developersForDismissArr.length) {
             let sortDevelopers = developersForDismissArr.sort(this.compareNumberDoneProjects);
 
-            let oneDismissedDeveloper = this.freeDevelopers.splice(this.freeDevelopers.indexOf(sortDevelopers[0]), 1);
+
+            let oneDismissedDeveloper = this.freeDevelopers.splice(this.freeDevelopers.indexOf(this.getDeveloperById(sortDevelopers[0].id)), 1);
 
             this.dismissedDevelopers.push(oneDismissedDeveloper);
         }
@@ -183,14 +191,19 @@ class Department {
         let nullComplexityProjectsArr = this.getProjectsWithComplexityNull();
         let busyDevelopersArr = this.busyDevelopers;
         let freeDevelopersArr = this.freeDevelopers;
+        console.log("8888888888888888888888888888888888888");
+        console.log(nullComplexityProjectsArr);
+        console.log("8888888888888888888888888888888888888");
+        // let g = nullComplexityProjectsArr.forEach.bind(this);
 
+        // g(function (project) {
         nullComplexityProjectsArr.forEach(function (project) {
-            project.complexity++;
 
             let currentDeveloper = busyDevelopersArr.find(function (developer) {
                 return developer.currentProject === project.id;
             });
-
+            console.log("******************--------------------******************");
+            currentDeveloper["currentProject"] = "";
             freeDevelopersArr.push(currentDeveloper);
         });
     }
@@ -288,26 +301,34 @@ class QADepartment extends Department {
         this.projectsInQueue.concat(this.projectsInQueue, projectsForTestingArray);
     }
 
-    moveDevelopers () {
+    cleanFreeQADevelopers() {
+        for (let i = 0; i < this.busyDevelopers.length; i++) {
+            if (this.busyDevelopers[i].currentProject === "") {
+                this.busyDevelopers[i].numberDoneProjects++;
+                this.busyDevelopers.splice(i,1);
+                i--;
+            }
+        }
+    }
+
+    moveQADevelopers () {
         let projectsWithComplexityNull = this.getProjectsWithComplexityNull();
+        let busyDevelopersArr = this.busyDevelopers;
+        let freeDevelopersArr = this.freeDevelopers;
 
         projectsWithComplexityNull.forEach(function (project) {
-            let currentDeveloper = this.getDeveloperByProject(project.id);
-            currentDeveloper.currentProject = "";
+            let currentDeveloper = busyDevelopersArr.find(function (developer) {
+                return developer.currentProject === project.id;
+            });
 
-            let deleteDeveloper = this.busyDevelopers.splice(this.busyDevelopers.indexOf(currentDeveloper), 1);
-
-            this.freeDevelopers.push(deleteDeveloper);
-            currentDeveloper.numberDoneProjects++;
+            freeDevelopersArr.push(currentDeveloper);
         });
     }
 
     // Добавление нулевых проектов из веб и моб отделов в отдел тестирования
 
     receivingWebAndMobProjects(projectsNullComplexity) {
-        projectsNullComplexity.forEach(function (project) {
-            this.projectsInQueue.push(project);
-        });
+            this.projectsInQueue.concat(projectsNullComplexity);
     }
 }
 

@@ -76,7 +76,7 @@ function main(n) {
 
         if (myCompany.departments["QADept"].getProjectsWithComplexityNull().length) {
             myCompany.departments["QADept"].cleanClosedProjects();
-            myCompany.departments["QADept"].moveDevelopers();
+            myCompany.departments["QADept"].moveQADevelopers();
         }
 
         else {

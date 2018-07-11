@@ -16,9 +16,10 @@ const { QASpecialist } = require("./classes");
 
 function main(n) {
     let myCompany = new Company({"WebDept": new WebDepartment(), "QADept": new QADepartment()}, new Director());
-
+    let dayCounter = 1;
     while (n) {
-        console.log("***start Day ***");
+        console.log("***start Day " + dayCounter + " ***");
+        dayCounter++;
         console.log("\n");
 
         // Генерация проектов на каждый день. Заполнение массивов в объектах отделов
@@ -98,7 +99,7 @@ function main(n) {
         // Проходимся по проектам (QA) с нулевой сложностью, сплайсим и пушим проекты и разработчиков
 
         if (myCompany.departments["QADept"].getProjectsWithComplexityNull().length) {
-            myCompany.departments["QADept"].moveDevelopers();
+            myCompany.departments["QADept"].moveQADevelopers();
             myCompany.departments["QADept"].cleanClosedProjects();
             myCompany.departments["WebDept"].cleanFreeDevelopers();
 
@@ -156,4 +157,4 @@ function main(n) {
         console.log("\n ||\n ||\n");
     }
 }
-main(7);
+main(20);
