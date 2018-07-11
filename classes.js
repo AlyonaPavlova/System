@@ -20,7 +20,7 @@ class Director {
         return Math.random() > 0.5 ? new WebProject(this.projectsCounter): new MobProject(this.projectsCounter);
     }
 
-    getProjects(webDeptQueue, mobDeptQueue) {
+    getProjects(webDeptQueue) {
         let projectsCount = Math.floor(Math.random() * maxNumberProjectsPurDay);
 
         while (projectsCount) {
@@ -29,16 +29,12 @@ class Director {
             if (project instanceof WebProject) {
                 webDeptQueue.push(project);
             }
-            else {
-                mobDeptQueue.push(project);
-            }
+            // else {
+            //     mobDeptQueue.push(project);
+            // }
 
             projectsCount --;
         }
-    }
-
-    moveProjectsToQA() {
-
     }
 }
 
@@ -76,9 +72,9 @@ class Department {
     //  Проверяем, сколько разработчиков нужно нанять (хранится в свойстве this.developerToHire)
 
     addDeveloper() {
-        this.developersCounter++;
-
         while (this.developerToHire) {
+            this.developersCounter++;
+
             this.freeDevelopers.push(new Developer(this.developersCounter));
 
             this.developerToHire --;
