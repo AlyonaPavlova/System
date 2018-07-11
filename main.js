@@ -32,6 +32,24 @@ function main(n) {
 
         myCompany.departments["QADept"].addNewProjectsToQueue(myCompany.departments["MobDept"].getProjectsWithComplexityNull());
 
+        // Обрабатываем назначение свободных программистов на проекты в веб-отделе
+
+        myCompany.departments["WebDept"].appointmentDevelopers();
+
+        // Обрабатываем назначение свободных программистов на проекты в моб-отделе
+
+        myCompany.departments["MobDept"].appointmentMobDevelopers();
+
+        // Обрабатываем назначение свободных программистов на проекты в отделе тестирования
+
+        myCompany.departments["QADept"].appointmentDevelopers();
+
+        //  Уменьшаем сложность у проектов в прогрессе
+
+        myCompany.departments.forEach(function (department) {
+            department.reduceComplexityProjects();
+        });
+
         // Проходимся по веб-проектам с нулевой сложностью, сплайсим и пушим проекты и разработчиков
 
         if (myCompany.departments["WebDept"].getProjectsWithComplexityNull().length) {

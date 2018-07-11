@@ -15,7 +15,7 @@ class Director {
     }
 
     createNewProject() {
-        this.projectsCounter ++;
+        this.projectsCounter++;
 
         return Math.random() > 0.5 ? new WebProject(this.projectsCounter): new MobProject(this.projectsCounter);
     }
@@ -76,7 +76,7 @@ class Department {
     //  Проверяем, сколько разработчиков нужно нанять (хранится в свойстве this.developerToHire)
 
     addDeveloper() {
-        this.developersCounter ++;
+        this.developersCounter++;
 
         while (this.developerToHire) {
             this.freeDevelopers.push(new Developer(this.developersCounter));
@@ -161,9 +161,15 @@ class Department {
         }
         else {
             this.freeDevelopers.forEach(function (item) {
-                item.daysIdled ++;
+                item.daysIdled++;
             });
         }
+    }
+
+    reduceComplexityProjects() {
+        this.projectsInProgress.forEach(function (project) {
+            project.complexity--;
+        });
     }
 
     moveWebAndMobDevelopers () {
@@ -188,7 +194,6 @@ class WebDepartment extends Department {
 }
 
 class MobDepartment extends Department {
-
     appointDeveloper () {
         const dev = this.freeDevelopers.shift();
         const project = this.projectsInQueue.shift();
@@ -286,7 +291,7 @@ class QADepartment extends Department {
             let deleteDeveloper = this.busyDevelopers.splice(this.busyDevelopers.indexOf(currentDeveloper), 1);
 
             this.freeDevelopers.push(deleteDeveloper);
-            currentDeveloper.numberDoneProjects ++;
+            currentDeveloper.numberDoneProjects++;
         });
     }
 }
