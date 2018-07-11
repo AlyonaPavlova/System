@@ -117,13 +117,7 @@ class Department {
         });
     }
 
-    // Возвращаем проекты, у которых сложность = 0
-
-    // getProjectsWithComplexityNull () {
-    //     return this.projectsInProgress.filter(function (project) {
-    //         return project.complexity === 0;
-    //     });
-    // }
+    // Удаляем проекты с нулевой сложностью
 
     cleanClosedProjects() {
         for (let index = 0; index < this.projectsInProgress.length; index++) {
@@ -133,6 +127,8 @@ class Department {
             }
         }
     }
+
+    // Возвращаем проекты, у которых сложность = 0
 
     getProjectsWithComplexityNull () {
         return this.cleanClosedProjects();
@@ -169,46 +165,29 @@ class Department {
             });
         }
     }
+
+    moveWebAndMobDevelopers () {
+        let nullComplexityProjectsArr = this.getProjectsWithComplexityNull();
+
+        nullComplexityProjectsArr.forEach(function (project) {
+            project.complexity++;
+
+            let currentDeveloper = this.getDeveloperByProject(project.id);
+            currentDeveloper.currentProject = "";
+            currentDeveloper.numberDoneProjects++;
+
+            let freedDeveloper = this.busyDevelopers.splice(this.busyDevelopers.indexOf(currentDeveloper), 1);
+
+            this.freeDevelopers.push(freedDeveloper);
+        });
+    }
 }
 
 class WebDepartment extends Department {
-    justCompleteProjects () {
-        let nullComplexityProjectsArr = this.getProjectsWithComplexityNull();
 
-        nullComplexityProjectsArr.forEach(function (project) {
-            project.complexity++;
-
-            let currentDeveloper = this.getDeveloperByProject(project.id);
-            currentDeveloper.currentProject = "";
-            currentDeveloper.numberDoneProjects++;
-
-            let freedDeveloper = this.busyDevelopers.splice(this.busyDevelopers.indexOf(currentDeveloper), 1);
-
-            this.freeDevelopers.push(freedDeveloper);
-
-            this.projectsInProgress.splice(this.projectsInProgress.indexOf(project), 1);
-        });
-    }
 }
 
 class MobDepartment extends Department {
-    justCompleteProjects () {
-        let nullComplexityProjectsArr = this.getProjectsWithComplexityNull();
-
-        nullComplexityProjectsArr.forEach(function (project) {
-            project.complexity++;
-
-            let currentDeveloper = this.getDeveloperByProject(project.id);
-            currentDeveloper.currentProject = "";
-            currentDeveloper.numberDoneProjects++;
-
-            let freedDeveloper = this.busyDevelopers.splice(this.busyDevelopers.indexOf(currentDeveloper), 1);
-
-            this.freeDevelopers.push(freedDeveloper);
-
-            this.projectsInProgress.splice(this.projectsInProgress.indexOf(project), 1);
-        });
-    }
 
     appointDeveloper () {
         const dev = this.freeDevelopers.shift();
@@ -297,12 +276,10 @@ class QADepartment extends Department {
         this.projectsInQueue.concat(this.projectsInQueue, projectsForTestingArray);
     }
 
-    justCompleteProjects() {
+    moveDevelopers () {
         let projectsWithComplexityNull = this.getProjectsWithComplexityNull();
 
         projectsWithComplexityNull.forEach(function (project) {
-            project.complexity --;
-
             let currentDeveloper = this.getDeveloperByProject(project.id);
             currentDeveloper.currentProject = "";
 
@@ -310,8 +287,6 @@ class QADepartment extends Department {
 
             this.freeDevelopers.push(deleteDeveloper);
             currentDeveloper.numberDoneProjects ++;
-
-            this.projectsInProgress.splice(this.projectsInProgress.indexOf(project), 1);
         });
     }
 }

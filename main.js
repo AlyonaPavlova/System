@@ -24,20 +24,19 @@ function main(n) {
 
         myCompany.director.getProjects(myCompany.departments["WebDept"].projectsInQueue, myCompany.departments["MobDept"].projectsInQueue);
 
-        // Проверяем, сколько разработчиков нам надо нанять со вчерашнего дня
+        // Передаем проекты с нулевой сложностью из веб-отдела в отдел тестирования
 
-        myCompany.departments.forEach(function (department) {
-            department.addDeveloper();
-        });
+        myCompany.departments["QADept"].addNewProjectsToQueue(myCompany.departments["WebDept"].getProjectsWithComplexityNull());
 
-        // myCompany.departments["WebDept"].addDeveloper();
-        // myCompany.departments["MobDept"].addDeveloper();
-        // myCompany.departments["QADept"].addDeveloper();
+        // Передаем проекты с нулевой сложностью из моб-отдела в отдел тестирования
+
+        myCompany.departments["QADept"].addNewProjectsToQueue(myCompany.departments["MobDept"].getProjectsWithComplexityNull());
 
         // Проходимся по веб-проектам с нулевой сложностью, сплайсим и пушим проекты и разработчиков
 
         if (myCompany.departments["WebDept"].getProjectsWithComplexityNull().length) {
-            myCompany.departments["WebDept"].justCompleteProjects();
+            myCompany.departments["WebDept"].cleanClosedProjects();
+            myCompany.departments["WebDept"].moveWebAndMobDevelopers();
         }
 
         else {
@@ -46,21 +45,25 @@ function main(n) {
 
         // Проходимся по  моб-проектам с нулевой сложностью, сплайсим и пушим проекты и разработчиков
 
-        if (myCompany.departments["MobDept"].getProjectsWithComplexityNull() === []) {
-            myCompany.departments["MobDept"].justCompleteProjects();
+        if (myCompany.departments["MobDept"].getProjectsWithComplexityNull().length) {
+            myCompany.departments["MobDept"].cleanClosedProjects();
+            myCompany.departments["MobDept"].moveWebAndMobDevelopers();
         }
 
         else {
             console.log("Array with mob-projects is empty");
         }
 
-        // Передаем проекты с нулевой сложностью из веб-отдела в отдел тестирования
+        // Проходимся по проектам (QA) с нулевой сложностью, сплайсим и пушим проекты и разработчиков
 
-        myCompany.departments["QADept"].addNewProjectsToQueue(myCompany.departments["WebDept"].getProjectsWithComplexityNull());
+        if (myCompany.departments["QADept"].getProjectsWithComplexityNull().length) {
+            myCompany.departments["QADept"].cleanClosedProjects();
+            myCompany.departments["QADept"].moveDevelopers();
+        }
 
-        // Передаем проекты с нулевой сложностью из моб-отдела в отдел тестирования
-
-        myCompany.departments["QADept"].addNewProjectsToQueue(myCompany.departments["MobDept"].getProjectsWithComplexityNull());
+        else {
+            console.log("Array with QA is empty");
+        }
 
         // Обрабатываем назначение свободных программистов на проекты в веб-отделе
 
@@ -70,22 +73,21 @@ function main(n) {
 
         myCompany.departments["MobDept"].appointmentMobDevelopers();
 
-        // Проходимся по проектам (QA) с нулевой сложностью, сплайсим и пушим проекты и разработчиков
+        // Обрабатываем назначение свободных программистов на проекты в отделе тестирования
 
-        if (myCompany.departments["QADept"].getProjectsWithComplexityNull() === []) {
-            myCompany.departments["QADept"].justCompleteProjects();
-        }
-
-        else {
-            console.log("Array with QA is empty");
-        }
+        myCompany.departments["WebDept"].appointmentDevelopers();
 
         // Удаляем разработчика, у которого дни простоя = 3 (самого неопытного)
 
-        myCompany.departments["WebDept"].delDeveloper();
-        myCompany.departments["MobDept"].delDeveloper();
-        myCompany.departments["QADept"].delDeveloper();
+        myCompany.departments.forEach(function (department) {
+            department.delDeveloper();
+        });
 
+        // Нанимаем разработчиков
+
+        myCompany.departments.forEach(function (department) {
+            department.addDeveloper();
+        });
 
 
 
