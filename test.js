@@ -89,6 +89,7 @@ function main(n) {
         if (myCompany.departments["WebDept"].getProjectsWithComplexityNull().length) {
             myCompany.departments["WebDept"].cleanClosedProjects();
             myCompany.departments["WebDept"].moveWebAndMobDevelopers();
+            myCompany.departments["QADept"].receivingWebAndMobProjects(myCompany.departments["WebDept"].getProjectsWithComplexityNull());
         }
 
         // Проходимся по проектам (QA) с нулевой сложностью, сплайсим и пушим проекты и разработчиков

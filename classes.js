@@ -292,6 +292,14 @@ class QADepartment extends Department {
             currentDeveloper.numberDoneProjects++;
         });
     }
+
+    // Добавление нулевых проектов из веб и моб отделов в отдел тестирования
+
+    receivingWebAndMobProjects(projectsNullComplexity) {
+        projectsNullComplexity.forEach(function (project) {
+            this.projectsInQueue.push(project);
+        });
+    }
 }
 
 class Developer {
