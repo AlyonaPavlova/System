@@ -121,8 +121,8 @@ class Department {
 
     cleanClosedProjects() {
         for (let index = 0; index < this.projectsInProgress.length; index++) {
-            if (this.projectsInProgress[i].complexity === 0) {
-                this.projectsInProgress.splice(i, 1);
+            if (this.projectsInProgress[index].complexity === 0) {
+                this.projectsInProgress.splice(index, 1);
                 index--;
             }
         }
@@ -131,7 +131,9 @@ class Department {
     // Возвращаем проекты, у которых сложность = 0
 
     getProjectsWithComplexityNull () {
-        return this.cleanClosedProjects();
+        return this.projectsInProgress.filter(function (project) {
+            return project.complexity === 0;
+        });
     }
 
     // Присваиваем разработчику id текущего проекта, обнуляем его счетчик дней простоя

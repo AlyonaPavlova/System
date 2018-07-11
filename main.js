@@ -46,9 +46,13 @@ function main(n) {
 
         //  Уменьшаем сложность у проектов в прогрессе
 
-        myCompany.departments.forEach(function (department) {
-            department.reduceComplexityProjects();
-        });
+        myCompany.departments["WebDept"].reduceComplexityProjects();
+        myCompany.departments["MobDept"].reduceComplexityProjects();
+        myCompany.departments["QADept"].reduceComplexityProjects();
+
+        // myCompany.departments.forEach(function (department) {
+        //     department.reduceComplexityProjects();
+        // });
 
         // Проходимся по веб-проектам с нулевой сложностью, сплайсим и пушим проекты и разработчиков
 
@@ -83,29 +87,25 @@ function main(n) {
             console.log("Array with QA is empty");
         }
 
-        // Обрабатываем назначение свободных программистов на проекты в веб-отделе
-
-        myCompany.departments["WebDept"].appointmentDevelopers();
-
-        // Обрабатываем назначение свободных программистов на проекты в моб-отделе
-
-        myCompany.departments["MobDept"].appointmentMobDevelopers();
-
-        // Обрабатываем назначение свободных программистов на проекты в отделе тестирования
-
-        myCompany.departments["WebDept"].appointmentDevelopers();
-
         // Удаляем разработчика, у которого дни простоя = 3 (самого неопытного)
 
-        myCompany.departments.forEach(function (department) {
-            department.delDeveloper();
-        });
+        myCompany.departments["WebDept"].delDeveloper();
+        myCompany.departments["MobDept"].delDeveloper();
+        myCompany.departments["QADept"].delDeveloper();
+
+        // myCompany.departments.forEach(function (department) {
+        //     department.delDeveloper();
+        // });
 
         // Нанимаем разработчиков
 
-        myCompany.departments.forEach(function (department) {
-            department.addDeveloper();
-        });
+        myCompany.departments["WebDept"].addDeveloper();
+        myCompany.departments["MobDept"].addDeveloper();
+        myCompany.departments["QADept"].addDeveloper();
+
+        // myCompany.departments.forEach(function (department) {
+        //     department.addDeveloper();
+        // });
 
 
 
