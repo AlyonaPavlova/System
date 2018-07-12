@@ -82,7 +82,7 @@ class Department {
     }
 
     compareNumberDoneProjects(a, b) {
-        return b.numberDoneProjects - a.numberDoneProjects;
+        return a.numberDoneProjects - b.numberDoneProjects;
     }
 
     getDeveloperById (developerId) {
@@ -127,6 +127,7 @@ class Department {
             }
         }
     }
+
 
     // Возвращаем проекты, у которых сложность = 0
 
