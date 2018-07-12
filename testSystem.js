@@ -10,9 +10,7 @@ const { Project } = require("./classes");
 const { WebProject } = require("./classes");
 const { MobProject } = require("./classes");
 const { Developer } = require("./classes");
-const { WebDeveloper } = require("./classes");
-const { MobDeveloper } = require("./classes");
-const { QASpecialist } = require("./classes");
+
 
 function main(n) {
     let myCompany = new Company({"WebDept": new WebDepartment(), "QADept": new QADepartment()}, new Director());
@@ -36,6 +34,10 @@ function main(n) {
         console.log(myCompany.departments["WebDept"].getProjectsWithComplexityNull());
 
         // Передаем проекты с нулевой сложностью из веб-отдела в отдел тестирования
+
+        if (myCompany.departments["WebDept"].getProjectsWithComplexityNull().length) {
+            myCompany.departments["QADept"].receivingWebAndMobProjects(myCompany.departments["WebDept"].getProjectsWithComplexityNull());
+        }
 
         // myCompany.departments["QADept"].addNewProjectsToQueue(myCompany.departments["WebDept"].getProjectsWithComplexityNull());
 
@@ -93,7 +95,7 @@ function main(n) {
 
         if (myCompany.departments["WebDept"].getProjectsWithComplexityNull().length) {
             myCompany.departments["WebDept"].moveWebAndMobDevelopers();
-            myCompany.departments["QADept"].receivingWebAndMobProjects(myCompany.departments["WebDept"].getProjectsWithComplexityNull());
+            // myCompany.departments["QADept"].receivingWebAndMobProjects(myCompany.departments["WebDept"].getProjectsWithComplexityNull());
             myCompany.departments["WebDept"].cleanClosedProjects();
             myCompany.departments["WebDept"].cleanFreeDevelopers();
         }

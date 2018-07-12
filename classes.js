@@ -20,7 +20,7 @@ class Director {
         return Math.random() > 0.5 ? new WebProject(this.projectsCounter): new MobProject(this.projectsCounter);
     }
 
-    getProjects(webDeptQueue) {
+    getProjects(webDeptQueue, mobDeptQueue) {
         let projectsCount = Math.floor(Math.random() * maxNumberProjectsPerDay);
 
         while (projectsCount) {
@@ -29,9 +29,9 @@ class Director {
             if (project instanceof WebProject) {
                 webDeptQueue.push(project);
             }
-            // else {
-            //     mobDeptQueue.push(project);
-            // }
+            else {
+                mobDeptQueue.push(project);
+            }
 
             projectsCount --;
         }
@@ -138,18 +138,29 @@ class Department {
         });
     }
 
-    // Присваиваем разработчику id текущего проекта, обнуляем его счетчик дней простоя
-    // Удаляем разработчика из массива свободных и добавляем в массив занятых
-    // Удаляем проект из массива очереди и добавляем в массив проектов в работе
-
     appointDeveloper () {
+        // Удаляем разработчика из массива свободных
+
         const dev = this.freeDevelopers.shift();
+
+        // Удаляем проект из массива очереди
+
         const project = this.projectsInQueue.shift();
 
+        // Обнуляем у разработчика счетчик дней простоя
+
         dev.daysIdled = 0;
+
+        // Присваиваем разработчику id текущего проекта
+
         dev.currentProject = project.id;
 
+        // Добавляем разработчика в массив занятых
+
         this.busyDevelopers.push(dev);
+
+        // Добавляем проект в массив проектов в работе
+
         this.projectsInProgress.push(project);
     }
 
@@ -170,11 +181,15 @@ class Department {
         }
     }
 
+    // Уменьшаем сложность проектов
+
     reduceComplexityProjects() {
         this.projectsInProgress.forEach(function (project) {
             project.complexity--;
         });
     }
+
+    // Удаляем освободившихся разработчиков из массива занятых
 
     cleanFreeDevelopers() {
         for (let i = 0; i < this.busyDevelopers.length; i++) {
@@ -185,6 +200,8 @@ class Department {
             }
         }
     }
+
+    // Проходим по массиву с нулевыми проектами, обнуляем текущие проекты у разработчиков и добавляем их в freeDevelopers
 
     moveWebAndMobDevelopers () {
         let nullComplexityProjectsArr = this.getProjectsWithComplexityNull();
@@ -286,20 +303,7 @@ class MobDepartment extends Department {
 }
 
 class QADepartment extends Department {
-    // addNewProjectsToQueue(projectsForTestingArray) {
-    //     this.projectsInQueue.concat(this.projectsInQueue, projectsForTestingArray);
-    // }
-
-    moveWebAndMobDevelopers () {
-        let nullComplexityProjectsArr = this.getProjectsWithComplexityNull();
-
-        nullComplexityProjectsArr.forEach((project) => {
-            let currentDeveloper = this.getDeveloperByProject(project.id);
-
-            currentDeveloper.currentProject = "";
-            this.freeDevelopers.push(currentDeveloper);
-        });
-    }
+    // Проходим по массиву с нулевыми проектами, обнуляем текущие проекты у разработчиков и добавляем их в freeDevelopers
 
     moveQADevelopers () {
         let projectsWithComplexityNull = this.getQAProjectsWithComplexityNull();
@@ -321,6 +325,7 @@ class QADepartment extends Department {
         // });
 
         this.projectsInQueue = this.projectsInQueue.concat(projectsNullComplexity);
+
         // this.projectsInQueue.forEach(function (project) {
         //     project.complexity++;
         // });
@@ -336,18 +341,6 @@ class Developer {
     }
 }
 
-class WebDeveloper extends Developer {
-
-}
-
-class MobDeveloper extends Developer {
-
-}
-
-class QASpecialist extends Developer {
-
-}
-
 module.exports = {
     Company,
     Director,
@@ -358,8 +351,5 @@ module.exports = {
     Project,
     WebProject,
     MobProject,
-    Developer,
-    WebDeveloper,
-    MobDeveloper,
-    QASpecialist
+    Developer
 };
