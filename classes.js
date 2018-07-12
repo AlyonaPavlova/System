@@ -207,7 +207,7 @@ class Department {
 
         nullComplexityProjectsArr.forEach((project) => {
             let currentDeveloper = this.getDeveloperByProject(project.id);
-
+            console.log(currentDeveloper);
             currentDeveloper.currentProject = "";
             this.freeDevelopers.push(currentDeveloper);
         });

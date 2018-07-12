@@ -20,6 +20,7 @@ let webDeptDismissedDevelopers;
 let lastElement;
 let webDeptProjectsInProgress;
 let webDeptProjectsInProgress2;
+let webDeptDeveloperToHire;
 
 beforeEach(function () {
     myCompany = new Company({"WebDept": new WebDepartment(), "MobDept": new MobDepartment(), "QADept": new QADepartment()}, new Director());
@@ -49,6 +50,22 @@ beforeEach(function () {
     myCompany.departments["WebDept"].appointmentDevelopers();
     webDeptBusyDevelopers = myCompany.departments["WebDept"].busyDevelopers;
     webDeptProjectsInProgress2 = myCompany.departments["WebDept"].projectsInProgress;
+
+    myCompany.departments["WebDept"].projectsInQueue = [{id:1, complexity:3}, {id:2, complexity:2}, {id:3, complexity:1}];
+    myCompany.departments["WebDept"].freeDevelopers = [];
+    myCompany.departments["WebDept"].appointmentDevelopers();
+    webDeptDeveloperToHire = myCompany.departments["WebDept"].developerToHire;
+    webDeptProjectsInQueueLength = myCompany.departments["WebDept"].projectsInQueue.length;
+
+    myCompany.departments["WebDept"].projectsInQueue = [];
+    myCompany.departments["WebDept"].freeDevelopers = [{id:1, currentProject: "", numberDoneProjects: 2, daysIdled: 2}, {id:2, currentProject: "", numberDoneProjects: 1, daysIdled: 2}, {id:3, currentProject: "", numberDoneProjects: 1, daysIdled: 2}];
+    myCompany.departments["WebDept"].appointmentDevelopers();
+    webDeptFreeDevelopers = myCompany.departments["WebDept"].freeDevelopers;
+
+    myCompany.departments["WebDept"].projectsInProgress = [{id:1, complexity:0}, {id:2, complexity:0}, {id:3, complexity:1}];
+    myCompany.departments["WebDept"].busyDevelopers = [{id:1, currentProject: "1", numberDoneProjects: 2, daysIdled: 2}, {id:2, currentProject: "2", numberDoneProjects: 1, daysIdled: 2}, {id:3, currentProject: "3", numberDoneProjects: 1, daysIdled: 2}];
+    myCompany.departments["WebDept"].moveWebAndMobDevelopers();
+    webDeptFreeDevelopers = myCompany.departments["WebDept"].freeDevelopers;
 });
 
 // createNewProject function
@@ -101,6 +118,18 @@ it("should return array with three elements", function () {
     expect(webDeptBusyDevelopers).to.have.lengthOf(3);
 });
 
-it("should return array with three elements", function () {
-    expect(webDeptProjectsInProgress2).to.have.lengthOf(3);
+it("should return equality of two variables", function () {
+    expect(webDeptDeveloperToHire).to.equal(webDeptProjectsInQueueLength);
+});
+
+it("should return property daysIdled equality 3", function () {
+    webDeptFreeDevelopers.forEach(function (developer) {
+        expect(developer.daysIdled).to.equal(3);
+    });
+});
+
+// moveWebAndMobDevelopers function
+
+it("should return length of 2", function () {
+    expect(webDeptFreeDevelopers).to.have.lengthOf(2);
 });
