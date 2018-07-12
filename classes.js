@@ -69,7 +69,7 @@ class Department {
         this.developersCounter = 0;
     }
 
-    //  Проверяем, сколько разработчиков нужно нанять (хранится в свойстве this.developerToHire)
+    //  Добавляем разработчиков
 
     addDeveloper() {
         while (this.developerToHire) {
@@ -82,7 +82,7 @@ class Department {
     }
 
     compareNumberDoneProjects(a, b) {
-        return a.numberDoneProjects - b.numberDoneProjects;
+        return b.numberDoneProjects - a.numberDoneProjects;
     }
 
     getDeveloperById (developerId) {
@@ -101,13 +101,11 @@ class Department {
         if (developersForDismissArr.length) {
             let sortDevelopers = developersForDismissArr.sort(this.compareNumberDoneProjects);
 
-
             let oneDismissedDeveloper = this.freeDevelopers.splice(this.freeDevelopers.indexOf(this.getDeveloperById(sortDevelopers[0].id)), 1);
 
-            this.dismissedDevelopers.push(oneDismissedDeveloper);
-        }
-        else {
-            console.log("Not developers for dismiss");
+            oneDismissedDeveloper.forEach((developer) => {
+                this.dismissedDevelopers.push(developer);
+            });
         }
     }
 

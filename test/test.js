@@ -1,6 +1,4 @@
-const { assert } = require("chai");
-const { should } = require("chai");
-const { expect } = require("chai");
+const { assert, should, expect } = require("chai");
 
 const { Company } = require("../classes");
 const { Director } = require("../classes");
@@ -14,27 +12,71 @@ const { MobProject } = require("../classes");
 const { Developer } = require("../classes");
 
 
-let myCompany = new Company({"WebDept": new WebDepartment(), "MobDept": new MobDepartment(), "QADept": new QADepartment()}, new Director());
+let myCompany;
+let webDeptProjectsInQueue;
+let mobDeptProjectsInQueue;
+let callCreateNewProject;
+let webDeptFreeDev;
+let webDeptDismissedDevelopers;
+let lastElement;
 
-let webDept = myCompany.departments["WebDept"].projectsInQueue;
-let mobDept = myCompany.departments["MobDept"].projectsInQueue;
+beforeEach(function () {
+    myCompany = new Company({"WebDept": new WebDepartment(), "MobDept": new MobDepartment(), "QADept": new QADepartment()}, new Director());
 
-myCompany.director.getProjects(webDept, mobDept);
+    webDeptProjectsInQueue = myCompany.departments["WebDept"].projectsInQueue;
+    mobDeptProjectsInQueue = myCompany.departments["MobDept"].projectsInQueue;
 
-describe("Class Director", function() {
-    it("should return object", function () {
-        expect(myCompany.director.createNewProject()).to.be.an("object").to.have.all.keys("id", "complexity");
-    });
+    myCompany.director.getProjects(webDeptProjectsInQueue, mobDeptProjectsInQueue);
+    callCreateNewProject = myCompany.director.createNewProject();
 
-    it("should return array", function () {
-        expect(webDept).to.be.an("array");
-    });
+    webDeptFreeDev = myCompany.departments["WebDept"].freeDevelopers;
+    myCompany.departments["WebDept"].developerToHire = 5;
+    myCompany.departments["WebDept"].addDeveloper();
 
-    it("should return array with projects", function () {
-        if (webDept.length) {
-            webDept.forEach(function (project) {
-                expect(project).to.have.all.keys("id", "complexity");
-            });
-        }
+    myCompany.departments["WebDept"].freeDevelopers = [{id:1, currentProject: "", numberDoneProjects: 2, daysIdled: 3}, {id:2, currentProject: "", numberDoneProjects: 1, daysIdled: 2}, {id:3, currentProject: "", numberDoneProjects: 1, daysIdled: 3}];
+    myCompany.departments["WebDept"].delDeveloper();
+    webDeptDismissedDevelopers = myCompany.departments["WebDept"].dismissedDevelopers;
+    lastElement = webDeptDismissedDevelopers[webDeptDismissedDevelopers.length - 1];
+
+    myCompany.departments["WebDept"].cleanClosedProjects();
+});
+
+// createNewProject function
+
+it("should return object", function () {
+    expect(callCreateNewProject).to.be.an("object").to.have.all.keys("id", "complexity");
+});
+
+// getProjects function
+
+it("should return array", function () {
+    expect(webDeptProjectsInQueue).to.be.an("array");
+});
+
+it("should return array with projects", function () {
+    if (webDeptProjectsInQueue.length) {
+        webDeptProjectsInQueue.forEach(function (project) {
+            expect(project).to.have.all.keys("id", "complexity");
+        });
+    }
+});
+
+// addDeveloper function
+
+it("should return length of 5", function () {
+    expect(webDeptFreeDev).to.have.lengthOf(5);
+});
+
+it("should return object with properties", function () {
+    webDeptFreeDev.forEach(function (developer) {
+        expect(developer).to.be.an("object").to.have.all.keys("id", "currentProject", "numberDoneProjects", "daysIdled");
     });
 });
+
+// delDeveloper function
+
+it("should return complexity equal 3", function () {
+    expect(lastElement).to.have.property("id", 3);
+});
+
+// cleanClosedProjects
