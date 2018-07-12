@@ -77,7 +77,7 @@ class Department {
 
             this.freeDevelopers.push(new Developer(this.developersCounter));
 
-            this.developerToHire --;
+            this.developerToHire--;
         }
     }
 
@@ -96,7 +96,6 @@ class Department {
     delDeveloper() {
         let developersForDismissArr = this.freeDevelopers.filter(function (developer) {
             return developer.daysIdled === 3;
-
         });
 
         if (developersForDismissArr.length) {
@@ -189,22 +188,12 @@ class Department {
 
     moveWebAndMobDevelopers () {
         let nullComplexityProjectsArr = this.getProjectsWithComplexityNull();
-        let busyDevelopersArr = this.busyDevelopers;
-        let freeDevelopersArr = this.freeDevelopers;
-        console.log("8888888888888888888888888888888888888");
-        console.log(nullComplexityProjectsArr);
-        console.log("8888888888888888888888888888888888888");
-        // let g = nullComplexityProjectsArr.forEach.bind(this);
 
-        // g(function (project) {
-        nullComplexityProjectsArr.forEach(function (project) {
+        nullComplexityProjectsArr.forEach((project) => {
+            let currentDeveloper = this.getDeveloperByProject(project.id);
 
-            let currentDeveloper = busyDevelopersArr.find(function (developer) {
-                return developer.currentProject === project.id;
-            });
-            console.log("******************--------------------******************");
-            currentDeveloper["currentProject"] = "";
-            freeDevelopersArr.push(currentDeveloper);
+            currentDeveloper.currentProject = "";
+            this.freeDevelopers.push(currentDeveloper);
         });
     }
 }
@@ -297,38 +286,44 @@ class MobDepartment extends Department {
 }
 
 class QADepartment extends Department {
-    addNewProjectsToQueue(projectsForTestingArray) {
-        this.projectsInQueue.concat(this.projectsInQueue, projectsForTestingArray);
-    }
+    // addNewProjectsToQueue(projectsForTestingArray) {
+    //     this.projectsInQueue.concat(this.projectsInQueue, projectsForTestingArray);
+    // }
 
-    cleanFreeQADevelopers() {
-        for (let i = 0; i < this.busyDevelopers.length; i++) {
-            if (this.busyDevelopers[i].currentProject === "") {
-                this.busyDevelopers[i].numberDoneProjects++;
-                this.busyDevelopers.splice(i,1);
-                i--;
-            }
-        }
+    moveWebAndMobDevelopers () {
+        let nullComplexityProjectsArr = this.getProjectsWithComplexityNull();
+
+        nullComplexityProjectsArr.forEach((project) => {
+            let currentDeveloper = this.getDeveloperByProject(project.id);
+
+            currentDeveloper.currentProject = "";
+            this.freeDevelopers.push(currentDeveloper);
+        });
     }
 
     moveQADevelopers () {
-        let projectsWithComplexityNull = this.getProjectsWithComplexityNull();
-        let busyDevelopersArr = this.busyDevelopers;
-        let freeDevelopersArr = this.freeDevelopers;
+        let projectsWithComplexityNull = this.getQAProjectsWithComplexityNull();
 
-        projectsWithComplexityNull.forEach(function (project) {
-            let currentDeveloper = busyDevelopersArr.find(function (developer) {
-                return developer.currentProject === project.id;
-            });
+        projectsWithComplexityNull.forEach((project) => {
+            let currentDeveloper = this.getDeveloperByProject(project.id);
 
-            freeDevelopersArr.push(currentDeveloper);
+            currentDeveloper.currentProject = "";
+            this.freeDevelopers.push(currentDeveloper);
         });
     }
 
     // Добавление нулевых проектов из веб и моб отделов в отдел тестирования
 
     receivingWebAndMobProjects(projectsNullComplexity) {
-            this.projectsInQueue.concat(projectsNullComplexity);
+        // projectsNullComplexity.forEach((project) => {
+        //     project.complexity++;
+        //     this.projectsInQueue.push(project);
+        // });
+
+        this.projectsInQueue = this.projectsInQueue.concat(projectsNullComplexity);
+        // this.projectsInQueue.forEach(function (project) {
+        //     project.complexity++;
+        // });
     }
 }
 

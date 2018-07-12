@@ -37,7 +37,7 @@ function main(n) {
 
         // Передаем проекты с нулевой сложностью из веб-отдела в отдел тестирования
 
-        myCompany.departments["QADept"].addNewProjectsToQueue(myCompany.departments["WebDept"].getProjectsWithComplexityNull());
+        // myCompany.departments["QADept"].addNewProjectsToQueue(myCompany.departments["WebDept"].getProjectsWithComplexityNull());
 
         console.log("\n");
         console.log(" Проекты с нулевой сложностью в веб-отделе после передачи веб-поектов в отдел тестирования");
@@ -86,6 +86,8 @@ function main(n) {
         console.log(myCompany.departments["WebDept"].projectsInProgress);
         console.log(" Проекты в прогрессе в отделе тестирования после уменьшения сложности");
         console.log(myCompany.departments["QADept"].projectsInProgress);
+        console.log(" Проекты в очереди в отделе тестирования");
+        console.log(myCompany.departments["QADept"].projectsInQueue);
 
         // Проходимся по веб-проектам с нулевой сложностью, сплайсим и пушим проекты и разработчиков
 
@@ -102,7 +104,6 @@ function main(n) {
             myCompany.departments["QADept"].moveQADevelopers();
             myCompany.departments["QADept"].cleanClosedProjects();
             myCompany.departments["WebDept"].cleanFreeDevelopers();
-
         }
 
         console.log("\n");
