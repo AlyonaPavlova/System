@@ -86,10 +86,9 @@ class Department {
     }
 
     getDeveloperById (developerId) {
-        let a = this.freeDevelopers.find(function (developer) {
+        return this.freeDevelopers.find(function (developer) {
             return developer.id === developerId;
         });
-        return a;
     }
 
     // Удаляем разработчиков, у которых дни простоя = 3
@@ -229,13 +228,13 @@ class MobDepartment extends Department {
         this.projectsInProgress.push(project);
 
         while(n) {
-            const dev = this.freeDevelopers.shift();
+            const dev = (function(){this.freeDevelopers.shift();});
+            // const dev = (function(){this.freeDevelopers.shift();});
 
             dev.daysIdled = 0;
             dev.currentProject = project.id;
 
             this.busyDevelopers.push(dev);
-
             n--;
         }
     }
@@ -274,12 +273,12 @@ class QADepartment extends Department {
     // Проходим по массиву с нулевыми проектами, обнуляем текущие проекты у разработчиков и добавляем их в freeDevelopers
 
     moveQADevelopers () {
-        let projectsWithComplexityNull = this.getProjectsWithComplexityNull();
+        let projectsWithComplexityNull = this.getQAProjectsWithComplexityNull();
 
         projectsWithComplexityNull.forEach((project) => {
             let currentDeveloper = this.getDeveloperByProject(project.id);
 
-            currentDeveloper.currentProject = "";
+            currentDeveloper.currentProject = 0;
             this.freeDevelopers.push(currentDeveloper);
         });
     }
@@ -287,12 +286,22 @@ class QADepartment extends Department {
     // Добавление нулевых проектов из веб и моб отделов в отдел тестирования
 
     receivingWebAndMobProjects(projectsNullComplexity) {
-        projectsNullComplexity.forEach((project) => {
-            project.complexity++;
-            this.projectsInQueue.push(project);
-        });
+        this.projectsInQueue = this.projectsInQueue.concat(projectsNullComplexity);
+    }
 
-        // this.projectsInQueue = this.projectsInQueue.concat(projectsNullComplexity);
+    getQAProjectsWithComplexityNull () {
+        return this.projectsInProgress.filter(function (project) {
+            return project.complexity === -1;
+        });
+    }
+
+    cleanClosedQAProjects() {
+        for (let index = 0; index < this.projectsInProgress.length; index++) {
+            if (this.projectsInProgress[index].complexity === -1) {
+                this.projectsInProgress.splice(index, 1);
+                index--;
+            }
+        }
     }
 }
 

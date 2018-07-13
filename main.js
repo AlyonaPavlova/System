@@ -5,7 +5,7 @@ const { Company, Director, WebDepartment, MobDepartment, QADepartment } = requir
 function main(n) {
     let myCompany = new Company({"WebDept": new WebDepartment(), "MobDept": new MobDepartment(), "QADept": new QADepartment()}, new Director());
     let dayCounter = 1;
-    
+
     while (n) {
         console.log("***start Day " + dayCounter + " ***");
         dayCounter++;
@@ -21,7 +21,7 @@ function main(n) {
 
         // Обрабатываем назначение свободных программистов на проекты в моб-отделе
 
-        myCompany.departments["MobDept"].appointmentDevelopers();
+        myCompany.departments["MobDept"].appointmentMobDevelopers();
 
         // Обрабатываем назначение свободных программистов на проекты в отделе тестирования
 
@@ -53,9 +53,9 @@ function main(n) {
 
         // Проходимся по проектам (QA) с нулевой сложностью, сплайсим и пушим проекты и разработчиков
 
-        if (myCompany.departments["QADept"].getProjectsWithComplexityNull().length) {
+        if (myCompany.departments["QADept"].getQAProjectsWithComplexityNull().length) {
             myCompany.departments["QADept"].moveQADevelopers();
-            myCompany.departments["QADept"].cleanClosedProjects();
+            myCompany.departments["QADept"].cleanClosedQAProjects();
             myCompany.departments["WebDept"].cleanFreeDevelopers();
         }
 
