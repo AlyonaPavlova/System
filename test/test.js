@@ -16,11 +16,17 @@ let webDeptProjectsInQueue;
 let mobDeptProjectsInQueue;
 let callCreateNewProject;
 let webDeptFreeDev;
+let webDeptProjectsInProgressClean;
 let webDeptDismissedDevelopers;
 let lastElement;
 let webDeptProjectsInProgress;
-let webDeptProjectsInProgress2;
 let webDeptDeveloperToHire;
+let webDeptBusyDevelopers;
+let webDeptProjectsInQueueLength;
+let webDeptFreeDevelopersDaysIdled;
+let webDeptFreeDevelopers;
+let callGetDeveloperByProject;
+let callGetProjectsWithComplexityNull;
 
 beforeEach(function () {
     myCompany = new Company({"WebDept": new WebDepartment(), "MobDept": new MobDepartment(), "QADept": new QADepartment()}, new Director());
@@ -35,21 +41,21 @@ beforeEach(function () {
     myCompany.departments["WebDept"].developerToHire = 5;
     myCompany.departments["WebDept"].addDeveloper();
 
-    myCompany.departments["WebDept"].freeDevelopers = [{id:1, currentProject: "", numberDoneProjects: 2, daysIdled: 3}, {id:2, currentProject: "", numberDoneProjects: 1, daysIdled: 2}, {id:3, currentProject: "", numberDoneProjects: 1, daysIdled: 3}];
+    myCompany.departments["WebDept"].freeDevelopers = [{id:1, currentProject: 0, numberDoneProjects: 2, daysIdled: 3}, {id:2, currentProject: 0, numberDoneProjects: 1, daysIdled: 2}, {id:3, currentProject: 0, numberDoneProjects: 1, daysIdled: 3}];
     myCompany.departments["WebDept"].delDeveloper();
     webDeptDismissedDevelopers = myCompany.departments["WebDept"].dismissedDevelopers;
     lastElement = webDeptDismissedDevelopers[webDeptDismissedDevelopers.length - 1];
 
     myCompany.departments["WebDept"].projectsInProgress = [{id:1, complexity:0}, {id:2, complexity:1}, {id:3, complexity:0}];
     myCompany.departments["WebDept"].cleanClosedProjects();
-    webDeptProjectsInProgress = myCompany.departments["WebDept"].projectsInProgress;
+    webDeptProjectsInProgressClean = myCompany.departments["WebDept"].projectsInProgress;
 
-    webDeptProjectsInProgress.length = 0;
+    myCompany.departments["WebDept"].projectsInProgress = [];
     myCompany.departments["WebDept"].projectsInQueue = [{id:1, complexity:3}, {id:2, complexity:2}, {id:3, complexity:1}];
-    myCompany.departments["WebDept"].freeDevelopers = [{id:1, currentProject: "", numberDoneProjects: 2, daysIdled: 3}, {id:2, currentProject: "", numberDoneProjects: 1, daysIdled: 2}, {id:3, currentProject: "", numberDoneProjects: 1, daysIdled: 3}];
+    myCompany.departments["WebDept"].freeDevelopers = [{id:1, currentProject: 0, numberDoneProjects: 2, daysIdled: 3}, {id:2, currentProject: 0, numberDoneProjects: 1, daysIdled: 2}, {id:3, currentProject: 0, numberDoneProjects: 1, daysIdled: 3}];
     myCompany.departments["WebDept"].appointmentDevelopers();
     webDeptBusyDevelopers = myCompany.departments["WebDept"].busyDevelopers;
-    webDeptProjectsInProgress2 = myCompany.departments["WebDept"].projectsInProgress;
+    webDeptProjectsInProgress = myCompany.departments["WebDept"].projectsInProgress;
 
     myCompany.departments["WebDept"].projectsInQueue = [{id:1, complexity:3}, {id:2, complexity:2}, {id:3, complexity:1}];
     myCompany.departments["WebDept"].freeDevelopers = [];
@@ -58,12 +64,19 @@ beforeEach(function () {
     webDeptProjectsInQueueLength = myCompany.departments["WebDept"].projectsInQueue.length;
 
     myCompany.departments["WebDept"].projectsInQueue = [];
-    myCompany.departments["WebDept"].freeDevelopers = [{id:1, currentProject: "", numberDoneProjects: 2, daysIdled: 2}, {id:2, currentProject: "", numberDoneProjects: 1, daysIdled: 2}, {id:3, currentProject: "", numberDoneProjects: 1, daysIdled: 2}];
+    myCompany.departments["WebDept"].freeDevelopers = [{id:1, currentProject: 0, numberDoneProjects: 2, daysIdled: 2}, {id:2, currentProject: 0, numberDoneProjects: 1, daysIdled: 2}, {id:3, currentProject: 0, numberDoneProjects: 1, daysIdled: 2}];
     myCompany.departments["WebDept"].appointmentDevelopers();
-    webDeptFreeDevelopers = myCompany.departments["WebDept"].freeDevelopers;
+    webDeptFreeDevelopersDaysIdled = myCompany.departments["WebDept"].freeDevelopers;
+
+    myCompany.departments["WebDept"].busyDevelopers = [{id:5, currentProject: 1, numberDoneProjects: 2, daysIdled: 2}, {id:6, currentProject: 2, numberDoneProjects: 2, daysIdled: 2}];
+    callGetDeveloperByProject = myCompany.departments["WebDept"].getDeveloperByProject(1);
 
     myCompany.departments["WebDept"].projectsInProgress = [{id:1, complexity:0}, {id:2, complexity:0}, {id:3, complexity:1}];
-    myCompany.departments["WebDept"].busyDevelopers = [{id:1, currentProject: "1", numberDoneProjects: 2, daysIdled: 2}, {id:2, currentProject: "2", numberDoneProjects: 1, daysIdled: 2}, {id:3, currentProject: "3", numberDoneProjects: 1, daysIdled: 2}];
+    callGetProjectsWithComplexityNull = myCompany.departments["WebDept"].getProjectsWithComplexityNull();
+
+    myCompany.departments["WebDept"].freeDevelopers = [];
+    myCompany.departments["WebDept"].projectsInProgress = [{id:1, complexity:0}, {id:2, complexity:0}, {id:3, complexity:1}];
+    myCompany.departments["WebDept"].busyDevelopers = [{id:1, currentProject: 1, numberDoneProjects: 2, daysIdled: 2}, {id:2, currentProject: 2, numberDoneProjects: 1, daysIdled: 2}, {id:3, currentProject: 3, numberDoneProjects: 1, daysIdled: 2}];
     myCompany.departments["WebDept"].moveWebAndMobDevelopers();
     webDeptFreeDevelopers = myCompany.departments["WebDept"].freeDevelopers;
 });
@@ -109,7 +122,7 @@ it("should return id equal 3", function () {
 // cleanClosedProjects function
 
 it("should return array with one element", function () {
-    expect(webDeptProjectsInProgress).to.have.lengthOf(1);
+    expect(webDeptProjectsInProgressClean).to.have.lengthOf(1);
 });
 
 // appointmentDevelopers function
@@ -123,9 +136,21 @@ it("should return equality of two variables", function () {
 });
 
 it("should return property daysIdled equality 3", function () {
-    webDeptFreeDevelopers.forEach(function (developer) {
+    webDeptFreeDevelopersDaysIdled.forEach(function (developer) {
         expect(developer.daysIdled).to.equal(3);
     });
+});
+
+// getDeveloperByProject function
+
+it("should return object with property currentProject equal 1", function () {
+    expect(callGetDeveloperByProject).to.be.an("object").to.have.property("currentProject", 1);
+});
+
+// getProjectsWithComplexityNull function
+
+it("should return object with property currentProject equal 1", function () {
+    expect(callGetProjectsWithComplexityNull).to.be.an("array").to.have.lengthOf(2);
 });
 
 // moveWebAndMobDevelopers function
@@ -133,3 +158,4 @@ it("should return property daysIdled equality 3", function () {
 it("should return length of 2", function () {
     expect(webDeptFreeDevelopers).to.have.lengthOf(2);
 });
+

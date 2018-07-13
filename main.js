@@ -24,13 +24,9 @@ function main(n) {
 
         myCompany.director.getProjects(myCompany.departments["WebDept"].projectsInQueue, myCompany.departments["MobDept"].projectsInQueue);
 
-        // Передаем проекты с нулевой сложностью из веб-отдела в отдел тестирования
-
-        myCompany.departments["QADept"].addNewProjectsToQueue(myCompany.departments["WebDept"].getProjectsWithComplexityNull());
-
         // Передаем проекты с нулевой сложностью из моб-отдела в отдел тестирования
 
-        myCompany.departments["QADept"].addNewProjectsToQueue(myCompany.departments["MobDept"].getProjectsWithComplexityNull());
+        // myCompany.departments["QADept"].addNewProjectsToQueue(myCompany.departments["MobDept"].getProjectsWithComplexityNull());
 
         // Обрабатываем назначение свободных программистов на проекты в веб-отделе
 

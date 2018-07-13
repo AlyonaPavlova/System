@@ -86,9 +86,10 @@ class Department {
     }
 
     getDeveloperById (developerId) {
-        return this.freeDevelopers.find(function (developer) {
+        let a = this.freeDevelopers.find(function (developer) {
             return developer.id === developerId;
         });
+        return a;
     }
 
     // Удаляем разработчиков, у которых дни простоя = 3
@@ -127,7 +128,6 @@ class Department {
             }
         }
     }
-
 
     // Возвращаем проекты, у которых сложность = 0
 
@@ -192,7 +192,7 @@ class Department {
 
     cleanFreeDevelopers() {
         for (let i = 0; i < this.busyDevelopers.length; i++) {
-            if (this.busyDevelopers[i].currentProject === "") {
+            if (this.busyDevelopers[i].currentProject === 0) {
                 this.busyDevelopers[i].numberDoneProjects++;
                 this.busyDevelopers.splice(i,1);
                 i--;
@@ -207,8 +207,7 @@ class Department {
 
         nullComplexityProjectsArr.forEach((project) => {
             let currentDeveloper = this.getDeveloperByProject(project.id);
-            console.log(currentDeveloper);
-            currentDeveloper.currentProject = "";
+            currentDeveloper.currentProject = 0;
             this.freeDevelopers.push(currentDeveloper);
         });
     }
@@ -334,7 +333,7 @@ class QADepartment extends Department {
 class Developer {
     constructor(id) {
         this.id = id;
-        this.currentProject = "";
+        this.currentProject = 0;
         this.numberDoneProjects = 0;
         this.daysIdled = 0;
     }
