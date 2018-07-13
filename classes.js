@@ -110,6 +110,11 @@ class Department {
         }
     }
 
+    // dellDeveloper() {
+    //     const dev = _.chain(this.freeDevelopers).filter("daysIdled", 3).sort("doneProjects").value().shift();
+    //     this.dismissedDevelopers.push(dev);
+    // }
+
     // Возвращаем разработчика, у которого указан передаваемый id проекта
 
     getDeveloperByProject (projectId) {
