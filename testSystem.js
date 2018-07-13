@@ -13,7 +13,7 @@ const { Developer } = require("./classes");
 
 
 function main(n) {
-    let myCompany = new Company({"WebDept": new WebDepartment(), "QADept": new QADepartment()}, new Director());
+    let myCompany = new Company({"WebDept": new WebDepartment(), "MobDept": new MobDepartment(), "QADept": new QADepartment()}, new Director());
     let dayCounter = 1;
     while (n) {
         console.log("***start Day " + dayCounter + " ***");
@@ -22,8 +22,7 @@ function main(n) {
 
         // Генерация проектов на каждый день. Заполнение массивов в объектах отделов
 
-        myCompany.director.getProjects(myCompany.departments["WebDept"].projectsInQueue);
-
+        myCompany.director.getProjects(myCompany.departments["WebDept"].projectsInQueue, myCompany.departments["MobDept"].projectsInQueue);
 
         console.log("\n");
         console.log(" Получили новые проекты в начале дня");
@@ -39,7 +38,11 @@ function main(n) {
             myCompany.departments["QADept"].receivingWebAndMobProjects(myCompany.departments["WebDept"].getProjectsWithComplexityNull());
         }
 
-        // myCompany.departments["QADept"].addNewProjectsToQueue(myCompany.departments["WebDept"].getProjectsWithComplexityNull());
+        // Передаем проекты с нулевой сложностью из моб-отдела в отдел тестирования
+
+        if (myCompany.departments["MobDept"].getProjectsWithComplexityNull().length) {
+            myCompany.departments["QADept"].receivingWebAndMobProjects(myCompany.departments["MobDept"].getProjectsWithComplexityNull());
+        }
 
         console.log("\n");
         console.log(" Проекты с нулевой сложностью в веб-отделе после передачи веб-поектов в отдел тестирования");
@@ -48,6 +51,10 @@ function main(n) {
         // Обрабатываем назначение свободных программистов на проекты в веб-отделе
 
         myCompany.departments["WebDept"].appointmentDevelopers();
+
+        // Обрабатываем назначение свободных программистов на проекты в моб-отделе
+
+        myCompany.departments["MobDept"].appointmentDevelopers();
 
         console.log("\n");
         console.log(" Занятые программисты в веб-отделе после назначения свободных программистов на проекты");
@@ -95,9 +102,16 @@ function main(n) {
 
         if (myCompany.departments["WebDept"].getProjectsWithComplexityNull().length) {
             myCompany.departments["WebDept"].moveWebAndMobDevelopers();
-            // myCompany.departments["QADept"].receivingWebAndMobProjects(myCompany.departments["WebDept"].getProjectsWithComplexityNull());
             myCompany.departments["WebDept"].cleanClosedProjects();
             myCompany.departments["WebDept"].cleanFreeDevelopers();
+        }
+
+        // Проходимся по моб-проектам с нулевой сложностью, сплайсим и пушим проекты и разработчиков
+
+        if (myCompany.departments["MobDept"].getProjectsWithComplexityNull().length) {
+            myCompany.departments["MobDept"].moveWebAndMobDevelopers();
+            myCompany.departments["MobDept"].cleanClosedProjects();
+            myCompany.departments["MobDept"].cleanFreeDevelopers();
         }
 
         // Проходимся по проектам (QA) с нулевой сложностью, сплайсим и пушим проекты и разработчиков

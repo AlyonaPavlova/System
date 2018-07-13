@@ -223,85 +223,50 @@ class WebDepartment extends Department {
 }
 
 class MobDepartment extends Department {
-    appointDeveloper () {
-        const dev = this.freeDevelopers.shift();
+    appointMobDeveloper (n) {
         const project = this.projectsInQueue.shift();
 
-        dev.daysIdled = 0;
-        dev.currentProject = project.id;
-
-        this.busyDevelopers.push(dev);
         this.projectsInProgress.push(project);
+
+        while(n) {
+            const dev = this.freeDevelopers.shift();
+
+            dev.daysIdled = 0;
+            dev.currentProject = project.id;
+
+            this.busyDevelopers.push(dev);
+
+            n--;
+        }
     }
-
-    appointTwoDevelopers () {
-        const dev1 = this.freeDevelopers.shift();
-        const dev2 = this.freeDevelopers.shift();
-        const project = this.projectsInQueue.shift();
-
-        dev1.daysIdled = 0;
-        dev2.daysIdled = 0;
-        dev1.currentProject = project.id;
-        dev2.currentProject = project.id;
-
-        this.busyDevelopers.push(dev1);
-        this.busyDevelopers.push(dev2);
-        this.projectsInProgress.push(project);
-    }
-
-    appointThreeDevelopers () {
-        const dev1 = this.freeDevelopers.shift();
-        const dev2 = this.freeDevelopers.shift();
-        const dev3 = this.freeDevelopers.shift();
-        const project = this.projectsInQueue.shift();
-
-        dev1.daysIdled = 0;
-        dev2.daysIdled = 0;
-        dev3.daysIdled = 0;
-        dev1.currentProject = project.id;
-        dev2.currentProject = project.id;
-        dev3.currentProject = project.id;
-
-        this.busyDevelopers.push(dev1);
-        this.busyDevelopers.push(dev2);
-        this.busyDevelopers.push(dev3);
-        this.projectsInProgress.push(project);
-    }
-
 
     // Обрабатываем назначение свободных программистов на проекты
 
-    appointmentMobDevelopers () {
-        let projectsOneComplexityArr = this.projectsInQueue.filter(function (project) {
-            return project.complexity === 1;
+    appointmentMobDevelopers() {
+        this.projectsInQueue.forEach((project) => {
+            if (project.complexity === 1) {
+                this.appointMobDeveloper(1);
+            }
+            if (project.complexity === 2) {
+                this.appointMobDeveloper(2);
+            }
+            if (project.complexity === 3) {
+                this.appointMobDeveloper(3);
+            }
+
+            while(this.projectsInQueue.length && this.freeDevelopers.length) {
+                this.appointMobDeveloper(1);
+            }
+
+            if (this.projectsInQueue.length) {
+                this.developerToHire = this.projectsInQueue.length;
+            }
+            else {
+                this.freeDevelopers.forEach(function (item) {
+                    item.daysIdled ++;
+                });
+            }
         });
-        let projectsTwoComplexityArr = this.projectsInQueue.filter(function (project) {
-            return project.complexity === 2;
-        });
-        let projectsThreeComplexityArr = this.projectsInQueue.filter(function (project) {
-            return project.complexity === 3;
-        });
-
-        while (projectsOneComplexityArr.length && this.freeDevelopers.length) {
-            this.appointDeveloper();
-        }
-
-        while (projectsTwoComplexityArr.length && this.freeDevelopers.length) {
-            this.appointTwoDevelopers();
-        }
-
-        while (projectsThreeComplexityArr.length && this.freeDevelopers.length) {
-            this.appointThreeDevelopers();
-        }
-
-        if (this.projectsInQueue.length) {
-            this.developerToHire = this.projectsInQueue.length;
-        }
-        else {
-            this.freeDevelopers.forEach(function (item) {
-                item.daysIdled ++;
-            });
-        }
     }
 }
 
@@ -309,7 +274,7 @@ class QADepartment extends Department {
     // Проходим по массиву с нулевыми проектами, обнуляем текущие проекты у разработчиков и добавляем их в freeDevelopers
 
     moveQADevelopers () {
-        let projectsWithComplexityNull = this.getQAProjectsWithComplexityNull();
+        let projectsWithComplexityNull = this.getProjectsWithComplexityNull();
 
         projectsWithComplexityNull.forEach((project) => {
             let currentDeveloper = this.getDeveloperByProject(project.id);
@@ -322,16 +287,12 @@ class QADepartment extends Department {
     // Добавление нулевых проектов из веб и моб отделов в отдел тестирования
 
     receivingWebAndMobProjects(projectsNullComplexity) {
-        // projectsNullComplexity.forEach((project) => {
-        //     project.complexity++;
-        //     this.projectsInQueue.push(project);
-        // });
+        projectsNullComplexity.forEach((project) => {
+            project.complexity++;
+            this.projectsInQueue.push(project);
+        });
 
-        this.projectsInQueue = this.projectsInQueue.concat(projectsNullComplexity);
-
-        // this.projectsInQueue.forEach(function (project) {
-        //     project.complexity++;
-        // });
+        // this.projectsInQueue = this.projectsInQueue.concat(projectsNullComplexity);
     }
 }
 
