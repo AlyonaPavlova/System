@@ -65,10 +65,9 @@ describe("Department", function () {
         myCompany.departments["WebDept"].freeDevelopers = [{id:1, currentProject: 0, numberDoneProjects: 2, daysIdled: 3}, {id:2, currentProject: 0, numberDoneProjects: 1, daysIdled: 2}, {id:3, currentProject: 0, numberDoneProjects: 1, daysIdled: 3}];
         myCompany.departments["WebDept"].delDeveloper();
 
-        let webDeptDismissedDevelopers = myCompany.departments["WebDept"].dismissedDevelopers;
-        let lastElement = webDeptDismissedDevelopers[webDeptDismissedDevelopers.length - 1];
+        let freeDevelopers = myCompany.departments["WebDept"].freeDevelopers;
 
-        expect(lastElement).to.have.property("id", 3);
+        expect(freeDevelopers).to.have.lengthOf(2);
     });
 
     // cleanClosedProjects function
@@ -138,14 +137,14 @@ describe("Department", function () {
         expect(callGetDeveloperByProject).to.be.an("object").to.have.property("currentProject", 1);
     });
 
-    // getProjectsWithComplexityNull function
+    // getWebAndMobClosedProjects function
 
-    it("Method getProjectsWithComplexityNull.Should return object with property currentProject equal 1", function () {
+    it("Method getWebAndMobClosedProjects.Should return object with property currentProject equal 1", function () {
         let myCompany = new Company({"WebDept": new WebDepartment(), "MobDept": new MobDepartment(), "QADept": new QADepartment()}, new Director());
 
         myCompany.departments["WebDept"].projectsInProgress = [{id:1, complexity:0}, {id:2, complexity:0}, {id:3, complexity:1}];
 
-        let callGetProjectsWithComplexityNull = myCompany.departments["WebDept"].getProjectsWithComplexityNull();
+        let callGetProjectsWithComplexityNull = myCompany.departments["WebDept"].getWebAndMobClosedProjects();
 
         expect(callGetProjectsWithComplexityNull).to.be.an("array").to.have.lengthOf(2);
     });

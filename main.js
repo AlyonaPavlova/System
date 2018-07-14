@@ -36,25 +36,25 @@ function main(n) {
 
         // Проходимся по веб-проектам с нулевой сложностью, сплайсим и пушим проекты и разработчиков
 
-        if (myCompany.departments["WebDept"].getProjectsWithComplexityNull().length) {
+        if (myCompany.departments["WebDept"].getWebAndMobClosedProjects().length) {
             myCompany.departments["WebDept"].moveWebAndMobDevelopers();
-            myCompany.departments["QADept"].receivingWebAndMobProjects(myCompany.departments["WebDept"].getProjectsWithComplexityNull());
+            myCompany.departments["QADept"].receivingWebAndMobProjects(myCompany.departments["WebDept"].getWebAndMobClosedProjects());
             myCompany.departments["WebDept"].cleanClosedProjects();
             myCompany.departments["WebDept"].cleanFreeDevelopers();
         }
 
         // Проходимся по моб-проектам с нулевой сложностью, сплайсим и пушим проекты и разработчиков
 
-        if (myCompany.departments["MobDept"].getProjectsWithComplexityNull().length) {
+        if (myCompany.departments["MobDept"].getWebAndMobClosedProjects().length) {
             myCompany.departments["MobDept"].moveWebAndMobDevelopers();
-            myCompany.departments["QADept"].receivingWebAndMobProjects(myCompany.departments["MobDept"].getProjectsWithComplexityNull());
+            myCompany.departments["QADept"].receivingWebAndMobProjects(myCompany.departments["MobDept"].getWebAndMobClosedProjects());
             myCompany.departments["MobDept"].cleanClosedProjects();
             myCompany.departments["MobDept"].cleanFreeDevelopers();
         }
 
         // Проходимся по проектам (QA) с нулевой сложностью, сплайсим и пушим проекты и разработчиков
 
-        if (myCompany.departments["QADept"].getQAProjectsWithComplexityNull().length) {
+        if (myCompany.departments["QADept"].getQAClosedProjects().length) {
             myCompany.departments["QADept"].moveQADevelopers();
             myCompany.departments["QADept"].cleanClosedQAProjects();
             myCompany.departments["WebDept"].cleanFreeDevelopers();
@@ -76,5 +76,12 @@ function main(n) {
         console.log("***end Day ***");
         console.log("\n ||\n ||\n");
     }
+
+    let hiredDevelopers = myCompany.departments["WebDept"].hiredDevelopers + myCompany.departments["MobDept"].hiredDevelopers + myCompany.departments["QADept"].hiredDevelopers;
+    let dismissedDevelopers = myCompany.departments["WebDept"].dismissedDevelopers + myCompany.departments["MobDept"].dismissedDevelopers + myCompany.departments["QADept"].dismissedDevelopers;
+
+    console.log("Number of completed projects: " + myCompany.departments["QADept"].completedProjects);
+    console.log("Number of hired developers: " + hiredDevelopers);
+    console.log("Number of dismissed developers: " + dismissedDevelopers);
 }
-main(20);
+main(10);

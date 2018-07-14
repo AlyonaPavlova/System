@@ -44,7 +44,7 @@ class Project {
         this.complexity = this.getRandComplexity();
     }
 
-    static getRandComplexity() {
+    getRandComplexity() {
         return Math.floor(Math.random() * 3) + 1;
     }
 }
@@ -59,9 +59,11 @@ class Department {
         this.projectsInProgress = [];
         this.freeDevelopers = [];
         this.busyDevelopers = [];
-        this.dismissedDevelopers = [];
         this.developerToHire = 0;
         this.developersCounter = 0;
+        this.dismissedDevelopers = 0;
+        this.hiredDevelopers = 0;
+        this.completedProjects = 0;
     }
 
     //  Добавляем разработчиков
@@ -73,17 +75,12 @@ class Department {
             this.freeDevelopers.push(new Developer(this.developersCounter));
 
             this.developerToHire--;
+            this.hiredDevelopers++;
         }
     }
 
-    static compareNumberDoneProjects(a, b) {
+    compareNumberDoneProjects(a, b) {
         return a.numberDoneProjects - b.numberDoneProjects;
-    }
-
-    getDeveloperById (developerId) {
-        return this.freeDevelopers.find(function (developer) {
-            return developer.id === developerId;
-        });
     }
 
     // Удаляем разработчиков, у которых дни простоя = 3
@@ -96,11 +93,9 @@ class Department {
         if (developersForDismissArr.length) {
             let sortDevelopers = developersForDismissArr.sort(this.compareNumberDoneProjects);
 
-            let oneDismissedDeveloper = this.freeDevelopers.splice(this.freeDevelopers.indexOf(this.getDeveloperById(sortDevelopers[0].id)), 1);
+            this.freeDevelopers.splice(this.freeDevelopers.indexOf(this.getDeveloperById(sortDevelopers[0].id)), 1);
 
-            oneDismissedDeveloper.forEach((developer) => {
-                this.dismissedDevelopers.push(developer);
-            });
+            this.dismissedDevelopers++;
         }
     }
 
@@ -112,20 +107,17 @@ class Department {
         });
     }
 
-    // Удаляем проекты с нулевой сложностью
+    // Возвращаем разработчика, у которого указан передаваемый id разработчика
 
-    cleanClosedProjects() {
-        for (let index = 0; index < this.projectsInProgress.length; index++) {
-            if (this.projectsInProgress[index].complexity === 0) {
-                this.projectsInProgress.splice(index, 1);
-                index--;
-            }
-        }
+    getDeveloperById (developerId) {
+        return this.freeDevelopers.find(function (developer) {
+            return developer.id === developerId;
+        });
     }
 
     // Возвращаем проекты, у которых сложность = 0
 
-    getProjectsWithComplexityNull () {
+    getWebAndMobClosedProjects () {
         return this.projectsInProgress.filter(function (project) {
             return project.complexity === 0;
         });
@@ -182,6 +174,29 @@ class Department {
         });
     }
 
+    // Проходим по массиву с нулевыми проектами, обнуляем текущие проекты у разработчиков и добавляем их в freeDevelopers
+
+    moveWebAndMobDevelopers () {
+        let nullComplexityProjectsArr = this.getWebAndMobClosedProjects();
+
+        nullComplexityProjectsArr.forEach((project) => {
+            let currentDeveloper = this.getDeveloperByProject(project.id);
+            currentDeveloper.currentProject = 0;
+            this.freeDevelopers.push(currentDeveloper);
+        });
+    }
+
+    // Удаляем проекты с нулевой сложностью
+
+    cleanClosedProjects() {
+        for (let index = 0; index < this.projectsInProgress.length; index++) {
+            if (this.projectsInProgress[index].complexity === 0) {
+                this.projectsInProgress.splice(index, 1);
+                index--;
+            }
+        }
+    }
+
     // Удаляем освободившихся разработчиков из массива занятых
 
     cleanFreeDevelopers() {
@@ -192,18 +207,6 @@ class Department {
                 i--;
             }
         }
-    }
-
-    // Проходим по массиву с нулевыми проектами, обнуляем текущие проекты у разработчиков и добавляем их в freeDevelopers
-
-    moveWebAndMobDevelopers () {
-        let nullComplexityProjectsArr = this.getProjectsWithComplexityNull();
-
-        nullComplexityProjectsArr.forEach((project) => {
-            let currentDeveloper = this.getDeveloperByProject(project.id);
-            currentDeveloper.currentProject = 0;
-            this.freeDevelopers.push(currentDeveloper);
-        });
     }
 }
 
@@ -270,10 +273,23 @@ class MobDepartment extends Department {
 }
 
 class QADepartment extends Department {
+    // Добавление нулевых проектов из веб и моб отделов в отдел тестирования
+
+    receivingWebAndMobProjects(projectsNullComplexity) {
+        this.projectsInQueue = this.projectsInQueue.concat(projectsNullComplexity);
+        this.developerToHire = this.projectsInQueue.length;
+    }
+
+    getQAClosedProjects () {
+        return this.projectsInProgress.filter(function (project) {
+            return project.complexity === -1;
+        });
+    }
+
     // Проходим по массиву с нулевыми проектами, обнуляем текущие проекты у разработчиков и добавляем их в freeDevelopers
 
     moveQADevelopers () {
-        let projectsWithComplexityNull = this.getQAProjectsWithComplexityNull();
+        let projectsWithComplexityNull = this.getQAClosedProjects();
 
         projectsWithComplexityNull.forEach((project) => {
             let currentDeveloper = this.getDeveloperByProject(project.id);
@@ -283,23 +299,11 @@ class QADepartment extends Department {
         });
     }
 
-    // Добавление нулевых проектов из веб и моб отделов в отдел тестирования
-
-    receivingWebAndMobProjects(projectsNullComplexity) {
-        this.projectsInQueue = this.projectsInQueue.concat(projectsNullComplexity);
-        this.developerToHire = this.projectsInQueue.length;
-    }
-
-    getQAProjectsWithComplexityNull () {
-        return this.projectsInProgress.filter(function (project) {
-            return project.complexity === -1;
-        });
-    }
-
     cleanClosedQAProjects() {
         for (let index = 0; index < this.projectsInProgress.length; index++) {
             if (this.projectsInProgress[index].complexity === -1) {
                 this.projectsInProgress.splice(index, 1);
+                this.completedProjects++;
                 index--;
             }
         }
