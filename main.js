@@ -4,11 +4,12 @@ const { Company, Director, WebDepartment, MobDepartment, QADepartment } = requir
 
 function main(n) {
     let myCompany = new Company({"WebDept": new WebDepartment(), "MobDept": new MobDepartment(), "QADept": new QADepartment()}, new Director());
-    let dayCounter = 1;
+    let dayCounter = 0;
 
     while (n) {
-        console.log("***start Day " + dayCounter + " ***");
         dayCounter++;
+
+        console.log("***start Day " + dayCounter + " ***");
         console.log("\n");
 
         // Генерация проектов на каждый день. Заполнение массивов в объектах отделов

@@ -44,19 +44,14 @@ class Project {
         this.complexity = this.getRandComplexity();
     }
 
-    getRandComplexity() {
+    static getRandComplexity() {
         return Math.floor(Math.random() * 3) + 1;
     }
 }
 
-class WebProject extends Project {
+class WebProject extends Project {}
 
-}
-
-
-class MobProject extends Project {
-
-}
+class MobProject extends Project {}
 
 class Department {
     constructor() {
@@ -81,7 +76,7 @@ class Department {
         }
     }
 
-    compareNumberDoneProjects(a, b) {
+    static compareNumberDoneProjects(a, b) {
         return a.numberDoneProjects - b.numberDoneProjects;
     }
 
@@ -108,11 +103,6 @@ class Department {
             });
         }
     }
-
-    // dellDeveloper() {
-    //     const dev = _.chain(this.freeDevelopers).filter("daysIdled", 3).sort("doneProjects").value().shift();
-    //     this.dismissedDevelopers.push(dev);
-    // }
 
     // Возвращаем разработчика, у которого указан передаваемый id проекта
 
@@ -222,50 +212,60 @@ class WebDepartment extends Department {
 }
 
 class MobDepartment extends Department {
-    appointMobDeveloper (n) {
-        const project = this.projectsInQueue.shift();
-
-        this.projectsInProgress.push(project);
-
+    appointMobDeveloper (n, projectId) {
         while(n) {
             const dev = (function(){this.freeDevelopers.shift();});
-            // const dev = (function(){this.freeDevelopers.shift();});
 
             dev.daysIdled = 0;
-            dev.currentProject = project.id;
+            dev.currentProject = projectId;
 
             this.busyDevelopers.push(dev);
             n--;
         }
+        const project = this.projectsInQueue.shift();
+
+        this.projectsInProgress.push(project);
     }
 
-    // Обрабатываем назначение свободных программистов на проекты
+    // Обрабатываем назначение свободных моб-программистов на проекты
 
     appointmentMobDevelopers() {
-        this.projectsInQueue.forEach((project) => {
-            if (project.complexity === 1) {
-                this.appointMobDeveloper(1);
+        for (let i = 0; i < this.projectsInQueue.length; i++) {
+            if (this.projectsInQueue[i].complexity === 1 && this.freeDevelopers.length) {
+                this.appointDeveloper();
+                i--;
             }
-            if (project.complexity === 2) {
-                this.appointMobDeveloper(2);
+            else if (this.projectsInQueue[i] === 2 && this.freeDevelopers.length >= 2) {
+                this.appointMobDeveloper(2, this.projectsInQueue[i].id);
+                i--;
             }
-            if (project.complexity === 3) {
-                this.appointMobDeveloper(3);
+            else if (this.projectsInQueue[i] === 3 && this.freeDevelopers.length >= 3) {
+                this.appointMobDeveloper(3, this.projectsInQueue[i].id);
+                i--;
             }
+            else if (this.freeDevelopers.length && this.projectsInQueue.length) {
+                while(this.freeDevelopers.length) {
+                    const dev = this.freeDevelopers.shift();
 
-            while(this.projectsInQueue.length && this.freeDevelopers.length) {
-                this.appointMobDeveloper(1);
-            }
+                    dev.daysIdled = 0;
+                    dev.currentProject = this.projectsInQueue[i].id;
 
-            if (this.projectsInQueue.length) {
+                    this.busyDevelopers.push(dev);
+                }
+                const project = this.projectsInQueue.shift();
+
+                this.projectsInProgress.push(project);
+                i--;
+            }
+            else if (this.projectsInQueue.length) {
                 this.developerToHire = this.projectsInQueue.length;
             }
             else {
                 this.freeDevelopers.forEach(function (item) {
-                    item.daysIdled ++;
-                });
+                    item.daysIdled ++;}
+                );
             }
-        });
+        }
     }
 }
 
@@ -287,6 +287,7 @@ class QADepartment extends Department {
 
     receivingWebAndMobProjects(projectsNullComplexity) {
         this.projectsInQueue = this.projectsInQueue.concat(projectsNullComplexity);
+        this.developerToHire = this.projectsInQueue.length;
     }
 
     getQAProjectsWithComplexityNull () {
@@ -314,15 +315,4 @@ class Developer {
     }
 }
 
-module.exports = {
-    Company,
-    Director,
-    Department,
-    WebDepartment,
-    MobDepartment,
-    QADepartment,
-    Project,
-    WebProject,
-    MobProject,
-    Developer
-};
+module.exports = {Company, Director, Department, WebDepartment, MobDepartment, QADepartment, WebProject, MobProject};
