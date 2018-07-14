@@ -4,14 +4,8 @@ const { Company, Director, WebDepartment, MobDepartment, QADepartment } = requir
 
 function main(n) {
     let myCompany = new Company({"WebDept": new WebDepartment(), "MobDept": new MobDepartment(), "QADept": new QADepartment()}, new Director());
-    let dayCounter = 0;
 
     while (n) {
-        dayCounter++;
-
-        console.log("***start Day " + dayCounter + " ***");
-        console.log("\n");
-
         // Генерация проектов на каждый день. Заполнение массивов в объектах отделов
 
         myCompany.director.getProjects(myCompany.departments["WebDept"].projectsInQueue, myCompany.departments["MobDept"].projectsInQueue);
@@ -52,7 +46,7 @@ function main(n) {
             myCompany.departments["MobDept"].cleanFreeDevelopers();
         }
 
-        // Проходимся по проектам (QA) с нулевой сложностью, сплайсим и пушим проекты и разработчиков
+        // Проходимся по проектам (QA) со сложностью -1, сплайсим и пушим проекты и разработчиков
 
         if (myCompany.departments["QADept"].getQAClosedProjects().length) {
             myCompany.departments["QADept"].moveQADevelopers();
@@ -73,8 +67,6 @@ function main(n) {
         }
 
         n --;
-        console.log("***end Day ***");
-        console.log("\n ||\n ||\n");
     }
 
     let hiredDevelopers = myCompany.departments["WebDept"].hiredDevelopers + myCompany.departments["MobDept"].hiredDevelopers + myCompany.departments["QADept"].hiredDevelopers;

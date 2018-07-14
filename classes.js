@@ -33,7 +33,7 @@ class Director {
                 mobDeptQueue.push(project);
             }
 
-            projectsCount --;
+            projectsCount--;
         }
     }
 }
@@ -210,9 +210,7 @@ class Department {
     }
 }
 
-class WebDepartment extends Department {
-
-}
+class WebDepartment extends Department {}
 
 class MobDepartment extends Department {
     appointMobDeveloper (n, projectId) {
@@ -286,7 +284,7 @@ class QADepartment extends Department {
         });
     }
 
-    // Проходим по массиву с нулевыми проектами, обнуляем текущие проекты у разработчиков и добавляем их в freeDevelopers
+    // Проходим по массиву с проектами со сложностью -1, обнуляем текущие проекты у разработчиков и добавляем их в freeDevelopers
 
     moveQADevelopers () {
         let projectsWithComplexityNull = this.getQAClosedProjects();
