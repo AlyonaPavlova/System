@@ -5,6 +5,52 @@ class Company {
         this.departments = departments;
         this.director = director;
     }
+
+    hiringDevelopers(company){
+        for (let department in company) {
+            company[department].addDeveloper();
+        }
+    }
+
+    dismissingDevelopers(company) {
+        for (let department in company) {
+            company[department].delDeveloper();
+        }
+    }
+
+    decreaseProjComplexity() {
+        for (let dept in this.departments) {
+            this.departments[dept].reduceComplexityProjects();
+        }
+    }
+
+    working(dir, depts, web, mob, QA) {
+        // Генерация проектов на каждый день. Заполнение массивов в объектах отделов
+
+        dir.getProjects(web.projectsInQueue, mob.projectsInQueue);
+
+        // Обрабатываем назначение свободных программистов на проекты в отделах
+
+        dir.setDevelopers(depts);
+
+        //  Уменьшаем сложность у проектов в прогрессе
+
+        this.decreaseProjComplexity();
+
+        // Проходимся по проектам с нулевой сложностью, сплайсим и пушим проекты и разработчиков
+
+        web.projectsProcessing(QA);
+        mob.projectsProcessing(QA);
+        QA.projectsProcessing();
+
+        // Удаляем разработчика, у которого дни простоя = 3 (самого неопытного)
+
+        this.dismissingDevelopers(depts);
+
+        // Нанимаем разработчиков
+
+        this.hiringDevelopers(depts);
+    }
 }
 
 let maxNumberProjectsPerDay = 4;
@@ -34,6 +80,12 @@ class Director {
             }
 
             projectsCount--;
+        }
+    }
+
+    setDevelopers(depts) {
+        for (let department in depts) {
+            depts[department].appointmentDevelopers();
         }
     }
 }
@@ -176,7 +228,7 @@ class Department {
 
     // Проходим по массиву с нулевыми проектами, обнуляем текущие проекты у разработчиков и добавляем их в freeDevelopers
 
-    moveWebAndMobDevelopers () {
+    moveDevsToFree () {
         let nullComplexityProjectsArr = this.getWebAndMobClosedProjects();
 
         nullComplexityProjectsArr.forEach((project) => {
@@ -208,12 +260,21 @@ class Department {
             }
         }
     }
+
+    projectsProcessing(QADept) {
+        if (this.getWebAndMobClosedProjects().length) {
+            this.moveDevsToFree();
+            QADept.receivingWebAndMobProjects(this.getWebAndMobClosedProjects());
+            this.cleanClosedProjects();
+            this.cleanFreeDevelopers();
+        }
+    }
 }
 
 class WebDepartment extends Department {}
 
 class MobDepartment extends Department {
-    appointMobDeveloper (n, projectId) {
+    appointDeveloper (n, projectId) {
         while(n) {
             const dev = (function(){this.freeDevelopers.shift();});
 
@@ -230,18 +291,18 @@ class MobDepartment extends Department {
 
     // Обрабатываем назначение свободных моб-программистов на проекты
 
-    appointmentMobDevelopers() {
+    appointmentDevelopers() {
         for (let i = 0; i < this.projectsInQueue.length; i++) {
             if (this.projectsInQueue[i].complexity === 1 && this.freeDevelopers.length) {
-                this.appointDeveloper();
+                this.appointDeveloper(1, this.projectsInQueue[i].id);
                 i--;
             }
             else if (this.projectsInQueue[i] === 2 && this.freeDevelopers.length >= 2) {
-                this.appointMobDeveloper(2, this.projectsInQueue[i].id);
+                this.appointDeveloper(2, this.projectsInQueue[i].id);
                 i--;
             }
             else if (this.projectsInQueue[i] === 3 && this.freeDevelopers.length >= 3) {
-                this.appointMobDeveloper(3, this.projectsInQueue[i].id);
+                this.appointDeveloper(3, this.projectsInQueue[i].id);
                 i--;
             }
             else if (this.freeDevelopers.length && this.projectsInQueue.length) {
@@ -278,7 +339,7 @@ class QADepartment extends Department {
         this.developerToHire = this.projectsInQueue.length;
     }
 
-    getQAClosedProjects () {
+    getClosedProjects () {
         return this.projectsInProgress.filter(function (project) {
             return project.complexity === -1;
         });
@@ -286,8 +347,8 @@ class QADepartment extends Department {
 
     // Проходим по массиву с проектами со сложностью -1, обнуляем текущие проекты у разработчиков и добавляем их в freeDevelopers
 
-    moveQADevelopers () {
-        let projectsWithComplexityNull = this.getQAClosedProjects();
+    moveDevsToFree () {
+        let projectsWithComplexityNull = this.getClosedProjects();
 
         projectsWithComplexityNull.forEach((project) => {
             let currentDeveloper = this.getDeveloperByProject(project.id);
@@ -304,6 +365,14 @@ class QADepartment extends Department {
                 this.completedProjects++;
                 index--;
             }
+        }
+    }
+
+    projectsProcessing() {
+        if (this.getClosedProjects().length) {
+            this.moveDevsToFree();
+            this.cleanClosedQAProjects();
+            this.cleanFreeDevelopers();
         }
     }
 }

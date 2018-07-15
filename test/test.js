@@ -133,15 +133,15 @@ describe("Department", function () {
         expect(dept.getWebAndMobClosedProjects()).to.be.an("array").to.have.lengthOf(2);
     });
 
-    // moveWebAndMobDevelopers function
+    // moveDevsToFree function
 
-    it("Method moveWebAndMobDevelopers.Should return length of 2", function () {
+    it("Method moveDevsToFree.Should return length of 2", function () {
         let myCompany = new Company({"WebDept": new WebDepartment(), "MobDept": new MobDepartment(), "QADept": new QADepartment()}, new Director());
         const dept = myCompany.departments["WebDept"];
 
         dept.projectsInProgress = [{id:1, complexity:0}, {id:2, complexity:0}, {id:3, complexity:1}];
         dept.busyDevelopers = [{id:1, currentProject: 1, numberDoneProjects: 2, daysIdled: 2}, {id:2, currentProject: 2, numberDoneProjects: 1, daysIdled: 2}, {id:3, currentProject: 3, numberDoneProjects: 1, daysIdled: 2}];
-        dept.moveWebAndMobDevelopers();
+        dept.moveDevsToFree();
 
         expect(dept.freeDevelopers).to.have.lengthOf(2);
     });
