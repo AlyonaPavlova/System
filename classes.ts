@@ -1,8 +1,8 @@
 class Department {
     projectsInQueue: any[];
     projectsInProgress: any[];
-    freeDevelopers: any[];
-    busyDevelopers: any[];
+    freeDevelopers: Developer[];
+    busyDevelopers: Developer[];
     developerToHire: number;
     developersCounter: number;
     dismissedDevelopers: number;
@@ -23,7 +23,7 @@ class Department {
 
     //  Добавляем разработчиков
 
-    addDeveloper() {
+    addDeveloper(): void {
         while (this.developerToHire) {
             this.developersCounter++;
 
@@ -34,14 +34,14 @@ class Department {
         }
     }
 
-    compareNumberDoneProjects(a, b) {
+    compareNumberDoneProjects(a: Developer, b: Developer): number {
         return a.numberDoneProjects - b.numberDoneProjects;
     }
 
     // Удаляем разработчиков, у которых дни простоя = 3
 
-    delDeveloper() {
-        let developersForDismissArr = this.freeDevelopers.filter(function (developer) {
+    delDeveloper(): void {
+        let developersForDismissArr = this.freeDevelopers.filter(function (developer: Developer) {
             return developer.daysIdled === 3;
         });
 
@@ -56,24 +56,24 @@ class Department {
 
     // Возвращаем разработчика, у которого указан передаваемый id проекта
 
-    getDeveloperByProject (projectId) {
-        return this.busyDevelopers.find(function (developer) {
+    getDeveloperByProject (projectId): Developer {
+        return this.busyDevelopers.find(function (developer: Developer) {
             return developer.currentProject === projectId;
         });
     }
 
     // Возвращаем разработчика, у которого указан передаваемый id разработчика
 
-    getDeveloperById (developerId) {
-        return this.freeDevelopers.find(function (developer) {
+    getDeveloperById (developerId): Developer {
+        return this.freeDevelopers.find(function (developer: Developer) {
             return developer.id === developerId;
         });
     }
 
     // Возвращаем проекты, у которых сложность = 0
 
-    getWebAndMobClosedProjects () {
-        return this.projectsInProgress.filter(function (project) {
+    getWebAndMobClosedProjects (): any[] {
+        return this.projectsInProgress.filter(function (project: any) {
             return project.complexity === 0;
         });
     }
@@ -91,7 +91,7 @@ class Department {
 
     // Обрабатываем назначение свободных программистов на проекты
 
-    appointmentDevelopers () {
+    appointmentDevelopers (): void {
         while (this.projectsInQueue.length && this.freeDevelopers.length) {
             this.appointDeveloper();
         }
@@ -100,7 +100,7 @@ class Department {
             this.developerToHire = this.projectsInQueue.length;
         }
         else {
-            this.freeDevelopers.forEach(function (item) {
+            this.freeDevelopers.forEach(function (item: Developer) {
                 item.daysIdled++;
             });
         }
@@ -108,18 +108,18 @@ class Department {
 
     // Уменьшаем сложность проектов
 
-    reduceComplexityProjects() {
-        this.projectsInProgress.forEach(function (project) {
+    reduceComplexityProjects(): void {
+        this.projectsInProgress.forEach(function (project: any) {
             project.complexity--;
         });
     }
 
     // Проходим по массиву с нулевыми проектами, обнуляем текущие проекты у разработчиков и добавляем их в freeDevelopers
 
-    moveDevsToFree () {
+    moveDevsToFree(): void {
         let nullComplexityProjectsArr = this.getWebAndMobClosedProjects();
 
-        nullComplexityProjectsArr.forEach((project) => {
+        nullComplexityProjectsArr.forEach((project: any) => {
             let currentDeveloper = this.getDeveloperByProject(project.id);
             currentDeveloper.currentProject = 0;
             this.freeDevelopers.push(currentDeveloper);
@@ -128,7 +128,7 @@ class Department {
 
     // Удаляем проекты с нулевой сложностью
 
-    cleanClosedProjects() {
+    cleanClosedProjects(): void {
         for (let index = 0; index < this.projectsInProgress.length; index++) {
             if (this.projectsInProgress[index].complexity === 0) {
                 this.projectsInProgress.splice(index, 1);
@@ -139,7 +139,7 @@ class Department {
 
     // Удаляем освободившихся разработчиков из массива занятых
 
-    cleanFreeDevelopers() {
+    cleanFreeDevelopers(): void {
         for (let i = 0; i < this.busyDevelopers.length; i++) {
             if (this.busyDevelopers[i].currentProject === 0) {
                 this.busyDevelopers[i].numberDoneProjects++;
@@ -149,7 +149,7 @@ class Department {
         }
     }
 
-    projectsProcessing(QADept) {
+    projectsProcessing(QADept: QADepartment): void {
         if (this.getWebAndMobClosedProjects().length) {
             this.moveDevsToFree();
             QADept.receivingWebAndMobProjects(this.getWebAndMobClosedProjects());
@@ -162,7 +162,7 @@ class Department {
 class WebDepartment extends Department {}
 
 class MobDepartment extends Department {
-    appointMobDeveloper (parameters: { n: any, projectId: any }): void {
+    appointMobDeveloper (parameters: { n: number, projectId: number }): void {
         let {n, projectId} = parameters;
         while(n) {
             const dev = this.freeDevelopers.shift();
@@ -180,7 +180,7 @@ class MobDepartment extends Department {
 
     // Обрабатываем назначение свободных моб-программистов на проекты
 
-    appointmentDevelopers() {
+    appointmentDevelopers(): void {
         for (let i = 0; i < this.projectsInQueue.length; i++) {
             if (this.projectsInQueue[i].complexity === 1 && this.freeDevelopers.length) {
                 this.appointMobDeveloper({n: 1, projectId: this.projectsInQueue[i].id});
@@ -212,8 +212,8 @@ class MobDepartment extends Department {
                 this.developerToHire = this.projectsInQueue.length;
             }
             else {
-                this.freeDevelopers.forEach(function (item) {
-                    item.daysIdled ++;}
+                this.freeDevelopers.forEach(function (developer: Developer) {
+                    developer.daysIdled ++;}
                 );
             }
         }
@@ -223,23 +223,23 @@ class MobDepartment extends Department {
 class QADepartment extends Department {
     // Добавление нулевых проектов из веб и моб отделов в отдел тестирования
 
-    receivingWebAndMobProjects(projectsNullComplexity) {
+    receivingWebAndMobProjects(projectsNullComplexity): void {
         this.projectsInQueue = this.projectsInQueue.concat(projectsNullComplexity);
         this.developerToHire = this.projectsInQueue.length;
     }
 
-    getClosedProjects () {
-        return this.projectsInProgress.filter(function (project) {
+    getClosedProjects(): any[] {
+        return this.projectsInProgress.filter(function (project: any) {
             return project.complexity === -1;
         });
     }
 
     // Проходим по массиву с проектами со сложностью -1, обнуляем текущие проекты у разработчиков и добавляем их в freeDevelopers
 
-    moveDevsToFree () {
+    moveDevsToFree(): void {
         let projectsWithComplexityNull = this.getClosedProjects();
 
-        projectsWithComplexityNull.forEach((project) => {
+        projectsWithComplexityNull.forEach((project: any) => {
             let currentDeveloper = this.getDeveloperByProject(project.id);
 
             currentDeveloper.currentProject = 0;
@@ -247,7 +247,7 @@ class QADepartment extends Department {
         });
     }
 
-    cleanClosedQAProjects() {
+    cleanClosedQAProjects(): void {
         for (let index = 0; index < this.projectsInProgress.length; index++) {
             if (this.projectsInProgress[index].complexity === -1) {
                 this.projectsInProgress.splice(index, 1);
@@ -257,7 +257,7 @@ class QADepartment extends Department {
         }
     }
 
-    projectsProcessing() {
+    projectsProcessing(): void {
         if (this.getClosedProjects().length) {
             this.moveDevsToFree();
             this.cleanClosedQAProjects();
@@ -267,10 +267,10 @@ class QADepartment extends Department {
 }
 
 class Developer {
-    private id: any;
-    private currentProject: number;
-    private numberDoneProjects: number;
-    private daysIdled: number;
+    id: number;
+    currentProject: number;
+    numberDoneProjects: number;
+    daysIdled: number;
     constructor(id) {
         this.id = id;
         this.currentProject = 0;
