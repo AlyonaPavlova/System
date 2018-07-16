@@ -63,7 +63,10 @@ class Director {
     createNewProject() {
         this.projectsCounter++;
 
-        return Math.random() > 0.5 ? new WebProject(this.projectsCounter): new MobProject(this.projectsCounter);
+        let newWebProject = new WebProject.Builder(this.projectsCounter);
+        let newMobProject = new MobProject.Builder(this.projectsCounter);
+
+        return Math.random() > 0.5 ? newWebProject.build(): newMobProject.build();
     }
 
     getProjects(webDeptQueue, mobDeptQueue) {
@@ -91,13 +94,28 @@ class Director {
 }
 
 class Project {
-    constructor(id) {
-        this.id = id;
-        this.complexity = this.getRandComplexity();
+    constructor(build) {
+        this.id = build.id;
+        this.complexity = build.complexity;
     }
 
-    getRandComplexity() {
-        return Math.floor(Math.random() * 3) + 1;
+    static get Builder() {
+        class NewProject {
+            constructor(id) {
+                this.id = id;
+            }
+            getRandComplexity() {
+                return Math.floor(Math.random() * 3) + 1;
+            }
+            complexity() {
+                this.complexity = this.getRandComplexity();
+                return this;
+            }
+            build() {
+                return new Project(this);
+            }
+        }
+        return NewProject;
     }
 }
 
@@ -123,8 +141,9 @@ class Department {
     addDeveloper() {
         while (this.developerToHire) {
             this.developersCounter++;
+            let newDeveloper = new Developer.Builder(this.developersCounter);
 
-            this.freeDevelopers.push(new Developer(this.developersCounter));
+            this.freeDevelopers.push(newDeveloper.build());
 
             this.developerToHire--;
             this.hiredDevelopers++;
@@ -378,11 +397,35 @@ class QADepartment extends Department {
 }
 
 class Developer {
-    constructor(id) {
-        this.id = id;
-        this.currentProject = 0;
-        this.numberDoneProjects = 0;
-        this.daysIdled = 0;
+    constructor(build) {
+        this.id = build.id;
+        this.currentProject = build.currentProject;
+        this.numberDoneProjects = build.numberDoneProjects;
+        this.daysIdled = build.daysIdled;
+    }
+
+    static get Builder() {
+        class NewDeveloper {
+            constructor(id) {
+                this.id = id;
+            }
+            currentProject() {
+                this.currentProject = 0;
+                return this;
+            }
+            numberDoneProjects() {
+                this.numberDoneProjects = 0;
+                return this;
+            }
+            daysIdled() {
+                this.daysIdled = 0;
+                return this;
+            }
+            build() {
+                return new Developer(this);
+            }
+        }
+        return NewDeveloper;
     }
 }
 
