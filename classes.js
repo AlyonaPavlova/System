@@ -103,13 +103,10 @@ class Project {
         class NewProject {
             constructor(id) {
                 this.id = id;
+                this.complexity = this.getRandComplexity();
             }
             getRandComplexity() {
                 return Math.floor(Math.random() * 3) + 1;
-            }
-            complexity() {
-                this.complexity = this.getRandComplexity();
-                return this;
             }
             build() {
                 return new Project(this);
@@ -408,18 +405,9 @@ class Developer {
         class NewDeveloper {
             constructor(id) {
                 this.id = id;
-            }
-            currentProject() {
                 this.currentProject = 0;
-                return this;
-            }
-            numberDoneProjects() {
                 this.numberDoneProjects = 0;
-                return this;
-            }
-            daysIdled() {
                 this.daysIdled = 0;
-                return this;
             }
             build() {
                 return new Developer(this);
